@@ -1,0 +1,132 @@
+{
+  "cars": [
+    {
+      "id": "clio",
+      "marque": "Renault",
+      "modele": "Clio V",
+      "version": "Intens · 2021",
+      "prix": 12900,
+      "km": 45000,
+      "carburant": "Essence",
+      "transmission": "Manuelle",
+      "couleur": "Blanc nacré",
+      "portes": 5,
+      "annee": 2021,
+      "co2": "118 g/km",
+      "motorisation": "1.0 TCe 100 cv",
+      "ref": "AZF-CV2021-001",
+      "imgs": [
+        "images/vehicules/clio-front.png",
+        "images/vehicules/clio-interieur.jpg",
+        "images/vehicules/clio-arriere.jpg"
+      ],
+      "options": [
+        "Climatisation automatique",
+        "Navigation GPS intégrée",
+        "Caméra de recul",
+        "Sièges chauffants",
+        "Régulateur de vitesse adaptatif",
+        "Jantes alliage 17\""
+      ],
+      "description": "Véhicule suivi et entretenu (factures disponibles). REPRISE POSSIBLE. Vendu révisé, tous les éléments d'usure systématiquement changés si nécessaire. Garantie 3 mois MBPT, extension possible 6 ou 12 mois. Premier propriétaire, non fumeur. Carnet d'entretien complet.",
+      "nouveaute": true,
+      "disponible": true
+    },
+    {
+      "id": "peugeot",
+      "marque": "Peugeot",
+      "modele": "3008",
+      "version": "GT Line · 2020",
+      "prix": 24500,
+      "km": 38000,
+      "carburant": "Diesel",
+      "transmission": "Automatique",
+      "couleur": "Gris platinium",
+      "portes": 5,
+      "annee": 2020,
+      "co2": "132 g/km",
+      "motorisation": "1.5 BlueHDi 130 cv",
+      "ref": "AZF-P3G2020-002",
+      "imgs": [
+        "images/vehicules/peugeot-front.jpg",
+        "images/vehicules/peugeot-interieur.webp",
+        "images/vehicules/peugeot-arriere.webp"
+      ],
+      "options": [
+        "Toit panoramique",
+        "i-Cockpit 3D avec affichage tête haute",
+        "Pack Safety Plus (angle mort, maintien voie)",
+        "Grip Control tout-terrain",
+        "Hayon électrique mains libres",
+        "Jantes alliage 19\" Abyss"
+      ],
+      "description": "Magnifique Peugeot 3008 GT Line, parfait état. Carnet d'entretien Peugeot à jour. Véhicule sorti de flotte entreprise, très bien entretenu. Toutes révisions en concession officielle. Pneus récents. Garantie constructeur encore valable.",
+      "nouveaute": true,
+      "disponible": true
+    },
+    {
+      "id": "golf",
+      "marque": "Volkswagen",
+      "modele": "Golf 8",
+      "version": "Life · 2022",
+      "prix": 19900,
+      "km": 22000,
+      "carburant": "Essence",
+      "transmission": "Manuelle",
+      "couleur": "Blanc pur",
+      "portes": 5,
+      "annee": 2022,
+      "co2": "110 g/km",
+      "motorisation": "1.5 TSI 130 cv",
+      "ref": "AZF-VG82022-003",
+      "imgs": [
+        "images/vehicules/golf-front.jpg",
+        "images/vehicules/golf-interieur.webp",
+        "images/vehicules/golf-arriere.jpg"
+      ],
+      "options": [
+        "Écran tactile 10\" avec Apple CarPlay / Android Auto",
+        "Aide au stationnement avant et arrière",
+        "Phares LED IQ.LIGHT matriciels",
+        "App-Connect sans fil",
+        "Volant multifonction chauffant",
+        "Détecteur de fatigue"
+      ],
+      "description": "Golf 8 Life quasi neuve, première main. Kilométrage exceptionnel pour l'année. Toutes options Life incluses. Aucun accident, carrosserie impeccable. Dernière révision effectuée. Vendue avec 2 jeux de clés, carnet et tous documents d'origine.",
+      "nouveaute": true,
+      "disponible": true
+    },
+    {
+      "id": "duster",
+      "marque": "Dacia",
+      "modele": "Duster",
+      "version": "Prestige · 2021",
+      "prix": 17400,
+      "km": 51000,
+      "carburant": "Diesel",
+      "transmission": "Manuelle",
+      "couleur": "Gris Urban",
+      "portes": 5,
+      "annee": 2021,
+      "co2": "128 g/km",
+      "motorisation": "1.5 Blue dCi 115 cv 4x4",
+      "ref": "AZF-DD2021-004",
+      "imgs": [
+        "images/vehicules/duster-front.jpg",
+        "images/vehicules/dust-interieur.jpg",
+        "images/vehicules/dust-arriere.jpg"
+      ],
+      "options": [
+        "Transmission intégrale 4x4",
+        "Multiview Camera 360°",
+        "Navigation GPS MediaNav",
+        "Vitres électriques 4",
+        "Climatisation automatique bizone",
+        "Jantes alliage 17\" Terracotta"
+      ],
+      "description": "Dacia Duster Prestige 4x4, idéal pour tous terrains. Entretien régulier chez Dacia. Courroie de distribution refaite à 45 000 km. Véhicule non fumeur, jamais accidenté. Excellent rapport qualité/prix. Reprise possible.",
+      "nouveaute": true,
+      "disponible": true
+    }
+  ]
+}

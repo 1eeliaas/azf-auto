@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="fr" style="color-scheme:dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AZF AUTO — Nos véhicules</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand:         '#c00f08',
+            'brand-dark':  '#8b0905',
+            'brand-deeper':'#5a0603',
+            ink:           '#0d0d0d',
+            'ink-soft':    '#3a3a3a',
+            'ink-muted':   '#7a7a7a',
+            'surface-2':   '#f7f5f4',
+            'surface-3':   '#ede9e8',
+            border:        '#e0dada',
+          },
+          fontFamily: {
+            display: ['"Barlow Condensed"', 'sans-serif'],
+            body:    ['"Inter"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+    body { margin: 0; background: #0d0d0d; color: #e8e6e4; overflow-x: hidden; }
+
+    /* ── Nav ── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(13,13,13,0.97);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.40);
+    }
+    #nav .nav-link  { color: #c8c4c2; }
+    #nav .nav-link:hover { color: #c00f08; }
+    #nav .nav-link.active { color: #c00f08; }
+    #nav .nav-logo  { color: #fff; }
+    #nav .nav-phone { color: #c8c4c2; }
+    #nav .hamburger-line { background: #e8e6e4; }
+
+    .nav-link {
+      font-size: 0.875rem; font-weight: 500; letter-spacing: 0.01em;
+      text-decoration: none; transition: color 200ms ease;
+    }
+    .nav-link:focus-visible { outline: 2px solid rgba(192,15,8,0.5); outline-offset: 4px; border-radius: 2px; }
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.5rem;
+      letter-spacing: -0.01em; color: #fff; text-decoration: none; transition: opacity 200ms ease;
+    }
+    .nav-logo:hover { opacity: 0.85; }
+    .nav-logo span { color: #c00f08; }
+    .nav-phone {
+      font-size: 0.875rem; font-weight: 500; text-decoration: none;
+      display: flex; align-items: center; gap: 6px; transition: color 200ms ease;
+    }
+    .nav-phone:hover { color: #fff !important; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px; background: #c00f08; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 9px 18px; border-radius: 6px; border: none; cursor: pointer;
+      text-decoration: none; letter-spacing: 0.01em;
+      box-shadow: 0 2px 6px rgba(192,15,8,0.40), 0 1px 2px rgba(0,0,0,0.20);
+      transition: background 200ms ease, transform 150ms ease, box-shadow 200ms ease;
+    }
+    .btn-primary:hover { background: #8b0905; transform: translateY(-1px); }
+    .btn-primary:active { background: #5a0603; transform: translateY(0); }
+    .btn-primary:focus-visible { outline: 2px solid rgba(192,15,8,0.6); outline-offset: 3px; }
+    .hamburger-line { display: block; width: 22px; height: 2px; border-radius: 2px; transition: transform 250ms ease, opacity 250ms ease; }
+    #menu-toggle[aria-expanded="true"] .line-1 { transform: translateY(7px) rotate(45deg); }
+    #menu-toggle[aria-expanded="true"] .line-2 { opacity: 0; }
+    #menu-toggle[aria-expanded="true"] .line-3 { transform: translateY(-7px) rotate(-45deg); }
+    #mobile-menu { display: none; background: rgba(13,13,13,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.08); }
+    #mobile-menu.open { display: block; }
+    .mobile-link { display: block; padding: 10px 0; font-size: 1.0625rem; font-weight: 500; color: #c8c4c2; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.08); transition: color 150ms ease; }
+    .mobile-link:hover { color: #c00f08; }
+
+    /* ── Cards ── */
+    .car-card {
+      background: #181818; border-radius: 14px; overflow: hidden;
+      transition: transform 300ms ease-out, box-shadow 300ms ease-out; cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+    .car-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 8px rgba(192,15,8,0.10), 0 16px 40px rgba(0,0,0,0.18), 0 0 0 1px rgba(192,15,8,0.12);
+    }
+    .car-card:hover .card-img { transform: scale(1.05); }
+    .car-card:focus-visible { outline: 2px solid #c00f08; outline-offset: 2px; }
+    .card-img { transition: transform 500ms ease-out; }
+
+    /* ── Filter sidebar ── */
+    .filter-label {
+      font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.35); font-weight: 600; display: block; margin-bottom: 8px;
+    }
+    .filter-select {
+      width: 100%; background: #1c1c1c; border: 1px solid rgba(255,255,255,0.10);
+      color: #e8e6e4; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500;
+      padding: 9px 12px; border-radius: 8px; cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='rgba(255,255,255,0.35)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      transition: border-color 200ms ease;
+    }
+    .filter-select:hover { border-color: rgba(255,255,255,0.25); }
+    .filter-select:focus { outline: none; border-color: rgba(192,15,8,0.6); }
+
+    .filter-input {
+      width: 100%; background: #1c1c1c; border: 1px solid rgba(255,255,255,0.10);
+      color: #e8e6e4; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500;
+      padding: 9px 12px; border-radius: 8px;
+      transition: border-color 200ms ease;
+    }
+    .filter-input::placeholder { color: rgba(255,255,255,0.25); }
+    .filter-input:focus { outline: none; border-color: rgba(192,15,8,0.6); }
+
+    .range-track {
+      width: 100%; height: 4px; background: rgba(255,255,255,0.12); border-radius: 99px;
+      position: relative; margin: 8px 0 4px;
+    }
+    .range-fill {
+      position: absolute; top: 0; height: 100%; background: #c00f08; border-radius: 99px;
+    }
+    input[type=range] {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: transparent;
+      position: absolute; top: 0; left: 0; margin: 0; pointer-events: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+      background: #c00f08; border: 2px solid #0d0d0d; cursor: pointer;
+      pointer-events: all; box-shadow: 0 2px 6px rgba(192,15,8,0.50);
+      transition: transform 150ms ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    input[type=range]::-moz-range-thumb {
+      width: 18px; height: 18px; border-radius: 50%; background: #c00f08;
+      border: 2px solid #0d0d0d; cursor: pointer; pointer-events: all;
+    }
+
+    .chip-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.12);
+      background: transparent; color: rgba(255,255,255,0.55); font-family: 'Inter', sans-serif;
+      font-size: 0.8125rem; font-weight: 500; cursor: pointer;
+      transition: all 180ms ease;
+    }
+    .chip-btn:hover { border-color: rgba(255,255,255,0.35); color: #e8e6e4; }
+    .chip-btn.active {
+      background: rgba(192,15,8,0.15); border-color: rgba(192,15,8,0.55);
+      color: #ff5f58;
+    }
+
+    /* ── Search bar ── */
+    .search-wrap {
+      position: relative; flex: 1;
+    }
+    .search-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: rgba(255,255,255,0.30); pointer-events: none;
+    }
+    .search-input {
+      width: 100%; background: #181818; border: 1px solid rgba(255,255,255,0.10);
+      color: #e8e6e4; font-family: 'Inter', sans-serif; font-size: 0.9375rem; font-weight: 400;
+      padding: 12px 14px 12px 44px; border-radius: 10px;
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .search-input::placeholder { color: rgba(255,255,255,0.28); }
+    .search-input:focus { outline: none; border-color: rgba(192,15,8,0.55); box-shadow: 0 0 0 3px rgba(192,15,8,0.12); }
+
+    /* ── Sort ── */
+    .sort-select {
+      background: #181818; border: 1px solid rgba(255,255,255,0.10);
+      color: #e8e6e4; font-family: 'Inter', sans-serif; font-size: 0.8125rem; font-weight: 500;
+      padding: 8px 32px 8px 12px; border-radius: 8px; cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='7' viewBox='0 0 10 7' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 6L9 1' stroke='rgba(255,255,255,0.35)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+    .sort-select:focus { outline: none; border-color: rgba(192,15,8,0.5); }
+
+    /* ── Skeleton loader ── */
+    .skeleton {
+      background: linear-gradient(90deg, #181818 25%, #222 50%, #181818 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ── No results ── */
+    .no-results {
+      grid-column: 1 / -1; text-align: center; padding: 80px 24px;
+    }
+
+    /* ── Filter toggle mobile ── */
+    #filter-panel { display: none; }
+    #filter-panel.open { display: block; }
+    @media (min-width: 1024px) {
+      #filter-panel { display: block !important; }
+      #filter-toggle { display: none !important; }
+    }
+
+    /* ── Active filters badge ── */
+    .filter-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 18px; height: 18px; background: #c00f08; color: #fff;
+      font-size: 0.6875rem; font-weight: 700; border-radius: 99px; padding: 0 5px;
+      margin-left: 6px;
+    }
+
+    /* ── Light mode ── */
+    body.light { background: #fff; color: #0d0d0d; }
+    body.light #nav { background: rgba(255,255,255,0.97); box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.10); }
+    body.light #nav .nav-link { color: #3a3a3a; }
+    body.light #nav .nav-link:hover { color: #c00f08; }
+    body.light #nav .nav-link.active { color: #c00f08; }
+    body.light #nav .nav-logo { color: #c00f08; }
+    body.light #nav .nav-phone { color: #3a3a3a; }
+    body.light #nav .hamburger-line { background: #0d0d0d; }
+    body.light #theme-toggle { border-color: rgba(0,0,0,0.18); color: rgba(0,0,0,0.60); }
+    body.light #theme-toggle:hover { border-color: rgba(0,0,0,0.40); color: #0d0d0d; }
+    body.light #mobile-menu { background: rgba(255,255,255,0.98); border-top-color: #e0dada; }
+    body.light .mobile-link { color: #0d0d0d; border-bottom-color: #f0ecea; }
+    body.light .car-card { background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.05); }
+    body.light .car-card:hover { box-shadow: 0 4px 8px rgba(192,15,8,0.10), 0 16px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(192,15,8,0.12); }
+    body.light .car-card h3 { color: #0d0d0d !important; }
+    body.light .car-card .card-subtitle { color: #7a7a7a !important; }
+    body.light .filter-select { background: #f7f5f4; border-color: #e0dada; color: #0d0d0d; }
+    body.light .filter-input { background: #f7f5f4; border-color: #e0dada; color: #0d0d0d; }
+    body.light .filter-input::placeholder { color: rgba(0,0,0,0.30); }
+    body.light .search-input { background: #f7f5f4; border-color: #e0dada; color: #0d0d0d; }
+    body.light .search-input::placeholder { color: rgba(0,0,0,0.30); }
+    body.light .search-icon { color: rgba(0,0,0,0.30); }
+    body.light .sort-select { background: #f7f5f4; border-color: #e0dada; color: #0d0d0d; }
+    body.light #sidebar { background: #f7f5f4 !important; border-color: #e0dada !important; }
+    body.light .filter-label { color: rgba(0,0,0,0.45); }
+    body.light .filter-section-title { color: #0d0d0d !important; }
+    body.light .chip-btn { border-color: rgba(0,0,0,0.15); color: rgba(0,0,0,0.55); }
+    body.light .chip-btn:hover { border-color: rgba(0,0,0,0.40); color: #0d0d0d; }
+    body.light .chip-btn.active { background: rgba(192,15,8,0.10); border-color: rgba(192,15,8,0.50); color: #c00f08; }
+    body.light .range-track { background: rgba(0,0,0,0.12); }
+    body.light input[type=range]::-webkit-slider-thumb { border-color: #f7f5f4; }
+    body.light #filter-toggle { background: #f7f5f4 !important; border-color: #e0dada !important; color: #0d0d0d !important; }
+    body.light #results-bar { border-bottom-color: #e0dada; }
+    body.light .skeleton { background: linear-gradient(90deg, #ede9e8 25%, #e0dada 50%, #ede9e8 75%); background-size: 200% 100%; }
+    /* Hero + search bar */
+    body.light #hero-strip { background: #f7f5f4 !important; border-bottom-color: #e0dada !important; }
+    body.light #hero-strip h1 { color: #0d0d0d !important; }
+    body.light #hero-strip #hero-subtitle { color: rgba(0,0,0,0.45) !important; }
+    body.light #search-bar-wrap { background: #fff !important; border-bottom-color: #e0dada !important; }
+    /* Footer */
+    body.light footer { background: #f0eeec !important; border-top-color: rgba(0,0,0,0.08) !important; }
+    body.light footer h4 { color: rgba(0,0,0,0.40) !important; }
+    body.light footer p { color: rgba(0,0,0,0.55) !important; }
+    body.light footer address { color: rgba(0,0,0,0.65) !important; }
+    body.light footer a[href^="tel"], body.light footer a[href^="mailto"] { color: rgba(0,0,0,0.65) !important; }
+    body.light footer [style*="border-top:1px solid rgba(255,255,255"] { border-top-color: rgba(0,0,0,0.08) !important; }
+
+    @media (min-width: 768px) {
+      footer > div > div:first-child { grid-template-columns: repeat(4, 1fr) !important; }
+      footer > div > div:last-child  { flex-direction: row !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<header id="nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+    <a href="index.html" class="nav-logo">AZF<span>&nbsp;AUTO</span></a>
+    <nav style="display:flex;align-items:center;gap:32px;" class="hidden md:flex">
+      <a href="index.html"           class="nav-link">Accueil</a>
+      <a href="nos-vehicules.html"   class="nav-link active">Nos véhicules</a>
+      <a href="contact.html"         class="nav-link">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button id="theme-toggle" aria-label="Basculer le thème"
+              style="background:none;border:1.5px solid rgba(255,255,255,0.22);border-radius:8px;cursor:pointer;padding:7px 9px;display:flex;align-items:center;color:rgba(255,255,255,0.80);transition:border-color 200ms ease,color 200ms ease;"
+              onmouseover="this.style.borderColor='rgba(255,255,255,0.55)';this.style.color='#fff'"
+              onmouseout="this.style.borderColor='rgba(255,255,255,0.22)';this.style.color='rgba(255,255,255,0.80)'">
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <a href="tel:+33363381844" class="nav-phone hidden md:flex">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        03 63 38 18 44
+      </a>
+      <div id="nav-auth"></div>
+      <button id="menu-toggle" aria-expanded="false" aria-label="Menu" class="md:hidden"
+              style="background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;">
+        <span class="hamburger-line line-1"></span>
+        <span class="hamburger-line line-2"></span>
+        <span class="hamburger-line line-3"></span>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-menu">
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:4px;">
+      <a href="index.html"          class="mobile-link" onclick="closeMobileMenu()">Accueil</a>
+      <a href="nos-vehicules.html"  class="mobile-link" onclick="closeMobileMenu()">Nos véhicules</a>
+      <a href="contact.html"        class="mobile-link" onclick="closeMobileMenu()">Contact</a>
+      <div id="mobile-auth" style="margin-top:4px;"></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0;" />
+      <a href="tel:+33363381844" style="display:flex;align-items:center;gap:8px;color:#c8c4c2;font-size:0.9375rem;font-weight:500;text-decoration:none;padding:8px 0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        03 63 38 18 44
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ─── HERO STRIP ─── -->
+<section id="hero-strip" style="margin-top:64px;background:#111;border-bottom:1px solid rgba(255,255,255,0.06);overflow:hidden;position:relative;">
+  <div style="position:absolute;inset:0;pointer-events:none;">
+    <div style="position:absolute;top:-60px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(192,15,8,0.12) 0%,transparent 70%);"></div>
+    <div style="position:absolute;bottom:-40px;left:-40px;width:300px;height:300px;background:radial-gradient(circle,rgba(192,15,8,0.06) 0%,transparent 70%);"></div>
+  </div>
+  <div style="max-width:1280px;margin:0 auto;padding:48px 24px 40px;position:relative;">
+    <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:#c00f08;font-weight:700;margin:0 0 10px;">Stock disponible</p>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div>
+        <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.5rem,5vw,3.75rem);font-weight:800;color:#fff;letter-spacing:-0.03em;margin:0;line-height:1.0;">Nos véhicules</h1>
+        <p id="hero-subtitle" style="font-size:0.9375rem;color:rgba(255,255,255,0.45);margin:10px 0 0;font-weight:400;">Chargement du catalogue…</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SEARCH BAR ─── -->
+<div style="background:#0d0d0d;border-bottom:1px solid rgba(255,255,255,0.06);padding:16px 0;" id="search-bar-wrap">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </span>
+      <input id="search-input" class="search-input" type="text" placeholder="Rechercher par marque, modèle, version…" autocomplete="off" />
+    </div>
+    <!-- Mobile filter toggle -->
+    <button id="filter-toggle" aria-expanded="false"
+            style="display:flex;align-items:center;gap:8px;padding:11px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:#181818;color:#e8e6e4;font-family:'Inter',sans-serif;font-size:0.875rem;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;"
+            class="lg:hidden">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+      Filtres
+      <span id="filter-badge-toggle" class="filter-badge" style="display:none;">0</span>
+    </button>
+  </div>
+</div>
+
+<!-- ─── MAIN LAYOUT ─── -->
+<div style="max-width:1280px;margin:0 auto;padding:32px 24px 80px;display:flex;gap:32px;align-items:flex-start;">
+
+  <!-- ── SIDEBAR FILTERS ── -->
+  <aside id="sidebar" style="width:260px;flex-shrink:0;background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:24px;position:sticky;top:88px;" class="hidden lg:block">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;color:#fff;margin:0;letter-spacing:-0.01em;">Filtres</h2>
+      <button id="reset-btn" onclick="resetFilters()"
+              style="font-size:0.75rem;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:color 150ms ease;padding:0;"
+              onmouseover="this.style.color='#c00f08'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">
+        Réinitialiser
+      </button>
+    </div>
+    <div id="filter-panel" style="display:flex;flex-direction:column;gap:22px;">
+
+      <!-- Marque -->
+      <div>
+        <span class="filter-label">Marque</span>
+        <select id="f-marque" class="filter-select" onchange="onMarqueChange()">
+          <option value="">Toutes les marques</option>
+        </select>
+      </div>
+
+      <!-- Modèle -->
+      <div>
+        <span class="filter-label">Modèle</span>
+        <select id="f-modele" class="filter-select" onchange="applyFilters()">
+          <option value="">Tous les modèles</option>
+        </select>
+      </div>
+
+      <div style="height:1px;background:rgba(255,255,255,0.07);"></div>
+
+      <!-- Budget -->
+      <div>
+        <span class="filter-label">Budget</span>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <input id="f-prix-min" class="filter-input" type="number" placeholder="Min €" min="0" style="width:50%;" oninput="applyFilters()" />
+          <input id="f-prix-max" class="filter-input" type="number" placeholder="Max €" min="0" style="width:50%;" oninput="applyFilters()" />
+        </div>
+        <div class="range-track" id="price-track">
+          <div class="range-fill" id="price-fill"></div>
+          <input id="range-prix-min" type="range" min="0" max="100000" value="0" step="500" oninput="onRangePrixMin()" />
+          <input id="range-prix-max" type="range" min="0" max="100000" value="100000" step="500" oninput="onRangePrixMax()" />
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:rgba(255,255,255,0.30);margin-top:6px;">
+          <span id="range-prix-min-label">0 €</span>
+          <span id="range-prix-max-label">100 000 €</span>
+        </div>
+      </div>
+
+      <div style="height:1px;background:rgba(255,255,255,0.07);"></div>
+
+      <!-- Carburant -->
+      <div>
+        <span class="filter-label" style="margin-bottom:10px;">Carburant</span>
+        <div id="f-carburant" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+
+      <!-- Transmission -->
+      <div>
+        <span class="filter-label" style="margin-bottom:10px;">Transmission</span>
+        <div id="f-transmission" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+
+      <div style="height:1px;background:rgba(255,255,255,0.07);"></div>
+
+      <!-- Année -->
+      <div>
+        <span class="filter-label">Année</span>
+        <div style="display:flex;gap:8px;">
+          <select id="f-annee-min" class="filter-select" style="width:50%;" onchange="applyFilters()">
+            <option value="">Depuis</option>
+          </select>
+          <select id="f-annee-max" class="filter-select" style="width:50%;" onchange="applyFilters()">
+            <option value="">Jusqu'à</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Kilométrage -->
+      <div>
+        <span class="filter-label">Kilométrage max</span>
+        <div class="range-track" id="km-track">
+          <div class="range-fill" id="km-fill"></div>
+          <input id="range-km" type="range" min="0" max="200000" value="200000" step="5000" oninput="onRangeKm()" />
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:rgba(255,255,255,0.30);margin-top:6px;">
+          <span>0 km</span>
+          <span id="range-km-label">200 000 km</span>
+        </div>
+      </div>
+
+    </div><!-- /filter-panel -->
+  </aside>
+
+  <!-- ── RESULTS AREA ── -->
+  <main style="flex:1;min-width:0;">
+
+    <!-- Mobile filter panel (inside results) -->
+    <div id="mobile-filter-panel" class="lg:hidden" style="display:none;background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:1.125rem;font-weight:700;color:#fff;margin:0;letter-spacing:-0.01em;">Filtres</h2>
+        <button onclick="resetFilters()" style="font-size:0.75rem;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;" onmouseover="this.style.color='#c00f08'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Réinitialiser</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <span class="filter-label">Marque</span>
+          <select id="mf-marque" class="filter-select" onchange="onMarqueChangeMobile()"><option value="">Toutes</option></select>
+        </div>
+        <div>
+          <span class="filter-label">Modèle</span>
+          <select id="mf-modele" class="filter-select" onchange="applyFilters()"><option value="">Tous</option></select>
+        </div>
+        <div>
+          <span class="filter-label">Budget max</span>
+          <input id="mf-prix-max" class="filter-input" type="number" placeholder="ex: 20000" oninput="applyFilters()" />
+        </div>
+        <div>
+          <span class="filter-label">Km max</span>
+          <input id="mf-km-max" class="filter-input" type="number" placeholder="ex: 100000" oninput="applyFilters()" />
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <span class="filter-label" style="margin-bottom:8px;">Carburant</span>
+        <div id="mf-carburant" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+      </div>
+    </div>
+
+    <!-- Results bar -->
+    <div id="results-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.07);flex-wrap:wrap;">
+      <p id="results-count" style="font-size:0.875rem;color:rgba(255,255,255,0.45);margin:0;font-weight:500;"></p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:0.8125rem;color:rgba(255,255,255,0.35);font-weight:500;">Trier :</span>
+        <select id="sort-select" class="sort-select" onchange="applyFilters()">
+          <option value="default">Par défaut</option>
+          <option value="prix-asc">Prix croissant</option>
+          <option value="prix-desc">Prix décroissant</option>
+          <option value="km-asc">Km croissant</option>
+          <option value="annee-desc">Plus récent</option>
+          <option value="annee-asc">Plus ancien</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Active filters chips -->
+    <div id="active-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+
+    <!-- Grid -->
+    <div id="car-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;"></div>
+
+  </main>
+</div>
+
+<!-- ─── FOOTER ─── -->
+<footer style="background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.07);padding:60px 0 0;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div style="display:grid;grid-template-columns:1fr;gap:40px;" class="md:grid-cols-4">
+      <div>
+        <a href="index.html" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.75rem;color:#fff;text-decoration:none;letter-spacing:-0.01em;display:block;margin-bottom:12px;">AZF<span style="color:#c00f08;"> AUTO</span></a>
+        <p style="font-size:0.8125rem;color:rgba(255,255,255,0.40);line-height:1.7;margin:0;">Votre spécialiste en véhicules d'occasion de qualité. Sélection rigoureuse, prix transparents.</p>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Contact</h4>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="tel:+33363381844" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>03 63 38 18 44</a>
+          <a href="mailto:contact@azf-auto-occasion.com" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>contact@azf-auto-occasion.com</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Adresse</h4>
+        <address style="font-style:normal;color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.8;">12 Rue de l'Industrie<br/>63000 Clermont-Ferrand<br/>France</address>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Horaires</h4>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.875rem;color:rgba(255,255,255,0.65);">
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Lun – Ven</span><span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 18h30</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Samedi</span><span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 17h</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Dimanche</span><span style="color:rgba(255,255,255,0.40);">Fermé</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:48px;padding:20px 0;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px;text-align:center;" class="md:flex-row">
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.25);margin:0;">© 2026 AZF AUTO. Tous droits réservés.</p>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.20);margin:0;">Véhicules d'occasion · Financement · Reprise</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── JAVASCRIPT ─── -->
+<script>
+(function () {
+'use strict';
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+var ALL_CARS   = [];
+var FILTERED   = [];
+
+var state = {
+  search       : '',
+  marque       : '',
+  modele       : '',
+  prixMin      : 0,
+  prixMax      : Infinity,
+  kmMax        : Infinity,
+  carburants   : [],   // multi-select
+  transmissions: [],   // multi-select
+  anneeMin     : 0,
+  anneeMax     : 9999,
+  sort         : 'default',
+};
+
+var PRICE_MIN_GLOBAL = 0;
+var PRICE_MAX_GLOBAL = 100000;
+var KM_MAX_GLOBAL    = 200000;
+
+/* ════════════════════════════════════════
+   FETCH DATA
+════════════════════════════════════════ */
+async function loadCars() {
+  showSkeletons();
+  try {
+    const r = await fetch('/api/cars');
+    ALL_CARS = await r.json();
+    ALL_CARS = ALL_CARS.filter(c => c.disponible !== false);
+  } catch (e) {
+    // fallback: load from static JSON (for file:// or if server not running)
+    try {
+      const r = await fetch('cars.json');
+      const d = await r.json();
+      ALL_CARS = (d.cars || []).filter(c => c.disponible !== false);
+    } catch (e2) {
+      ALL_CARS = [];
+    }
+  }
+  initFilters();
+  applyFilters();
+}
+
+/* ════════════════════════════════════════
+   INIT FILTERS from data
+════════════════════════════════════════ */
+function initFilters() {
+  // Price range
+  var prices = ALL_CARS.map(c => c.prix).filter(Boolean);
+  PRICE_MIN_GLOBAL = prices.length ? Math.floor(Math.min(...prices) / 500) * 500 : 0;
+  PRICE_MAX_GLOBAL = prices.length ? Math.ceil(Math.max(...prices)  / 500) * 500 : 100000;
+  KM_MAX_GLOBAL    = 200000;
+
+  var rMin = document.getElementById('range-prix-min');
+  var rMax = document.getElementById('range-prix-max');
+  rMin.min = PRICE_MIN_GLOBAL; rMin.max = PRICE_MAX_GLOBAL; rMin.value = PRICE_MIN_GLOBAL;
+  rMax.min = PRICE_MIN_GLOBAL; rMax.max = PRICE_MAX_GLOBAL; rMax.value = PRICE_MAX_GLOBAL;
+  document.getElementById('range-prix-min-label').textContent = fmtPrix(PRICE_MIN_GLOBAL);
+  document.getElementById('range-prix-max-label').textContent = fmtPrix(PRICE_MAX_GLOBAL);
+  updatePriceFill();
+
+  var rKm = document.getElementById('range-km');
+  rKm.max = KM_MAX_GLOBAL; rKm.value = KM_MAX_GLOBAL;
+  document.getElementById('range-km-label').textContent = fmtKm(KM_MAX_GLOBAL);
+  updateKmFill();
+
+  // Marques
+  var marques = [...new Set(ALL_CARS.map(c => c.marque).filter(Boolean))].sort();
+  var fMarque = document.getElementById('f-marque');
+  var mfMarque = document.getElementById('mf-marque');
+  fMarque.innerHTML  = '<option value="">Toutes les marques</option>';
+  mfMarque.innerHTML = '<option value="">Toutes</option>';
+  marques.forEach(m => {
+    fMarque.innerHTML  += '<option value="' + esc(m) + '">' + esc(m) + '</option>';
+    mfMarque.innerHTML += '<option value="' + esc(m) + '">' + esc(m) + '</option>';
+  });
+
+  // Carburants chips
+  var carbs = [...new Set(ALL_CARS.map(c => c.carburant).filter(Boolean))].sort();
+  buildChips('f-carburant',   carbs, 'carburants');
+  buildChips('mf-carburant',  carbs, 'carburants');
+
+  // Transmissions chips
+  var trans = [...new Set(ALL_CARS.map(c => {
+    if (!c.transmission) return null;
+    return c.transmission.startsWith('Auto') ? 'Automatique' : 'Manuelle';
+  }).filter(Boolean))].sort();
+  buildChips('f-transmission', trans, 'transmissions');
+
+  // Années
+  var annees = [...new Set(ALL_CARS.map(c => c.annee).filter(Boolean))].sort();
+  var fAMin = document.getElementById('f-annee-min');
+  var fAMax = document.getElementById('f-annee-max');
+  fAMin.innerHTML = '<option value="">Depuis</option>';
+  fAMax.innerHTML = "<option value=''>Jusqu'à</option>";
+  annees.forEach(a => {
+    fAMin.innerHTML += '<option value="' + a + '">' + a + '</option>';
+    fAMax.innerHTML += '<option value="' + a + '">' + a + '</option>';
+  });
+
+  // Hero subtitle
+  document.getElementById('hero-subtitle').textContent =
+    ALL_CARS.length + ' véhicule' + (ALL_CARS.length > 1 ? 's' : '') + ' en stock — sélection vérifiée et garantie';
+}
+
+function buildChips(containerId, values, stateKey) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  values.forEach(function(val) {
+    var btn = document.createElement('button');
+    btn.className   = 'chip-btn';
+    btn.textContent = val;
+    btn.type        = 'button';
+    btn.dataset.val = val;
+    btn.addEventListener('click', function() {
+      toggleChip(stateKey, val, containerId);
+      // sync mobile/desktop
+      var otherId = containerId === 'f-carburant' ? 'mf-carburant' : null;
+      if (otherId) syncChips(otherId, stateKey);
+    });
+    el.appendChild(btn);
+  });
+}
+
+function syncChips(containerId, stateKey) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  el.querySelectorAll('.chip-btn').forEach(function(btn) {
+    btn.classList.toggle('active', state[stateKey].includes(btn.dataset.val));
+  });
+}
+
+/* ════════════════════════════════════════
+   FILTER + SORT + RENDER
+════════════════════════════════════════ */
+function applyFilters() {
+  // Read all filter values
+  state.search        = (document.getElementById('search-input').value || '').toLowerCase().trim();
+  state.marque        = document.getElementById('f-marque').value  || document.getElementById('mf-marque').value  || '';
+  state.modele        = document.getElementById('f-modele').value  || document.getElementById('mf-modele').value  || '';
+  state.sort          = document.getElementById('sort-select').value;
+
+  var pMin = document.getElementById('f-prix-min').value;
+  var pMax = document.getElementById('f-prix-max').value || document.getElementById('mf-prix-max').value;
+  state.prixMin = pMin ? parseInt(pMin) : 0;
+  state.prixMax = pMax ? parseInt(pMax) : Infinity;
+
+  // Also apply range sliders
+  var rMin = parseInt(document.getElementById('range-prix-min').value);
+  var rMax = parseInt(document.getElementById('range-prix-max').value);
+  state.prixMin = Math.max(state.prixMin, rMin);
+  if (!pMax) state.prixMax = rMax;
+
+  var kmMaxInput = document.getElementById('mf-km-max').value;
+  state.kmMax = kmMaxInput ? parseInt(kmMaxInput) : parseInt(document.getElementById('range-km').value);
+
+  var aMin = document.getElementById('f-annee-min').value;
+  var aMax = document.getElementById('f-annee-max').value;
+  state.anneeMin = aMin ? parseInt(aMin) : 0;
+  state.anneeMax = aMax ? parseInt(aMax) : 9999;
+
+  FILTERED = ALL_CARS.filter(function(c) {
+    if (state.search) {
+      var hay = [c.marque, c.modele, c.version, c.motorisation, c.carburant, c.transmission, c.couleur].join(' ').toLowerCase();
+      if (!hay.includes(state.search)) return false;
+    }
+    if (state.marque && c.marque !== state.marque) return false;
+    if (state.modele && c.modele !== state.modele) return false;
+    if (c.prix < state.prixMin || c.prix > state.prixMax) return false;
+    if (c.km > state.kmMax) return false;
+    if (state.carburants.length && !state.carburants.includes(c.carburant)) return false;
+    if (state.transmissions.length) {
+      var normT = c.transmission && c.transmission.startsWith('Auto') ? 'Automatique' : 'Manuelle';
+      if (!state.transmissions.includes(normT)) return false;
+    }
+    if (c.annee < state.anneeMin || c.annee > state.anneeMax) return false;
+    return true;
+  });
+
+  // Sort
+  FILTERED.sort(function(a, b) {
+    switch (state.sort) {
+      case 'prix-asc':   return a.prix - b.prix;
+      case 'prix-desc':  return b.prix - a.prix;
+      case 'km-asc':     return a.km - b.km;
+      case 'annee-desc': return b.annee - a.annee;
+      case 'annee-asc':  return a.annee - b.annee;
+      default:           return 0;
+    }
+  });
+
+  renderResults();
+  renderActiveChips();
+  updateFilterBadge();
+}
+
+/* ════════════════════════════════════════
+   RENDER
+════════════════════════════════════════ */
+function renderResults() {
+  var grid = document.getElementById('car-grid');
+  var count = document.getElementById('results-count');
+  count.textContent = FILTERED.length + ' véhicule' + (FILTERED.length > 1 ? 's' : '') + ' trouvé' + (FILTERED.length > 1 ? 's' : '');
+
+  if (FILTERED.length === 0) {
+    grid.innerHTML = '<div class="no-results"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 16px;display:block;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><p style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.5rem;font-weight:700;color:rgba(255,255,255,0.25);margin:0 0 8px;">Aucun résultat</p><p style="font-size:0.875rem;color:rgba(255,255,255,0.20);margin:0 0 20px;">Essayez d\'élargir vos critères de recherche.</p><button onclick="resetFilters()" style="padding:10px 20px;background:#c00f08;color:#fff;border:none;border-radius:8px;font-family:\'Inter\',sans-serif;font-size:0.875rem;font-weight:600;cursor:pointer;">Réinitialiser les filtres</button></div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  FILTERED.forEach(function(car) {
+    var art = document.createElement('article');
+    art.className = 'car-card';
+    art.tabIndex  = 0;
+    art.setAttribute('role', 'link');
+    art.setAttribute('aria-label', car.marque + ' ' + car.modele + ' — ' + fmtPrix(car.prix));
+    art.onclick   = function() { window.location.href = 'vehicule.html?id=' + car.id; };
+    art.onkeydown = function(e) { if (e.key === 'Enter') art.onclick(); };
+
+    var imgSrc = (car.imgs && car.imgs[0]) ? car.imgs[0] : 'https://placehold.co/600x400/181818/444?text=No+image';
+    var badge  = car.nouveaute ? '<span style="position:absolute;top:12px;left:12px;background:#c00f08;color:#fff;font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:99px;letter-spacing:0.06em;text-transform:uppercase;">Nouveauté</span>' : '';
+
+    art.innerHTML =
+      '<div style="position:relative;aspect-ratio:4/3;overflow:hidden;">'
+      + '<img src="' + esc(imgSrc) + '" alt="' + esc(car.marque) + ' ' + esc(car.modele) + '" style="width:100%;height:100%;object-fit:cover;display:block;" class="card-img" loading="lazy" />'
+      + '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.70) 0%,transparent 55%);pointer-events:none;"></div>'
+      + '<div style="position:absolute;inset:0;background:rgba(192,15,8,0.10);mix-blend-mode:multiply;pointer-events:none;"></div>'
+      + badge
+      + '<button class="fav-card-btn" data-id="' + esc(car.id) + '" onclick="cardFav(event,\'' + esc(car.id) + '\')" title="Ajouter aux favoris" style="position:absolute;bottom:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.50);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 150ms ease,border-color 150ms ease;z-index:2;">'
+      + '<svg class="fav-card-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.70)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+      + '</button>'
+      + '<span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);color:#0d0d0d;font-size:0.7rem;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid rgba(0,0,0,0.08);">' + esc(car.carburant) + '</span>'
+      + '<div style="position:absolute;bottom:12px;left:14px;">'
+      + '<p style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.75rem;font-weight:800;color:#fff;margin:0;letter-spacing:-0.02em;line-height:1.0;">' + fmtPrix(car.prix) + '</p>'
+      + '</div>'
+      + '</div>'
+      + '<div style="padding:16px 18px 20px;">'
+      + '<h3 style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.25rem;font-weight:700;color:#e8e6e4;letter-spacing:-0.01em;margin:0 0 2px;">' + esc(car.marque) + ' ' + esc(car.modele) + '</h3>'
+      + '<p style="font-size:0.8125rem;color:#666;margin:0 0 12px;" class="card-subtitle">' + esc(car.version || '') + '</p>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:10px 16px;font-size:0.8rem;color:#aaa;font-weight:500;">'
+      + '<span style="display:flex;align-items:center;gap:4px;">'
+      + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+      + fmtKm(car.km) + '</span>'
+      + '<span style="display:flex;align-items:center;gap:4px;">'
+      + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>'
+      + (car.annee || '—') + '</span>'
+      + '<span style="display:flex;align-items:center;gap:4px;">'
+      + '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>'
+      + esc(car.transmission || '—') + '</span>'
+      + '</div>'
+      + '<div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">'
+      + '<a href="vehicule.html?id=' + esc(car.id) + '" style="color:#c00f08;font-size:0.875rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms ease;" onmouseover="this.style.color=\'#ff5f58\'" onmouseout="this.style.color=\'#c00f08\'">Voir la fiche <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>'
+      + '</div>'
+      + '</div>';
+
+    grid.appendChild(art);
+  });
+  if (typeof window.applyFavButtons === 'function') window.applyFavButtons();
+}
+
+function renderActiveChips() {
+  var el = document.getElementById('active-chips');
+  el.innerHTML = '';
+  function addChip(label, onRemove) {
+    var span = document.createElement('span');
+    span.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;background:rgba(192,15,8,0.12);border:1px solid rgba(192,15,8,0.35);color:#ff7b75;font-size:0.8125rem;font-weight:500;';
+    span.innerHTML = esc(label) + '<button type="button" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;display:flex;align-items:center;line-height:1;" onclick="' + onRemove + '"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+    el.appendChild(span);
+  }
+  if (state.search)    addChip('Recherche : ' + state.search, 'removeSearch()');
+  if (state.marque)    addChip('Marque : ' + state.marque,    'removeMarque()');
+  if (state.modele)    addChip('Modèle : ' + state.modele,    'removeModele()');
+  if (state.prixMin > PRICE_MIN_GLOBAL) addChip('Prix min : ' + fmtPrix(state.prixMin), 'removePrixMin()');
+  if (state.prixMax < PRICE_MAX_GLOBAL && state.prixMax !== Infinity) addChip('Prix max : ' + fmtPrix(state.prixMax), 'removePrixMax()');
+  state.carburants.forEach(function(c) { addChip(c, 'removeCarburant("' + c + '")'); });
+  state.transmissions.forEach(function(t) { addChip(t, 'removeTransmission("' + t + '")'); });
+  if (state.kmMax < KM_MAX_GLOBAL) addChip('Km max : ' + fmtKm(state.kmMax), 'removeKmMax()');
+}
+
+function updateFilterBadge() {
+  var n = 0;
+  if (state.search) n++;
+  if (state.marque) n++;
+  if (state.modele) n++;
+  if (state.prixMin > PRICE_MIN_GLOBAL) n++;
+  if (state.prixMax < PRICE_MAX_GLOBAL && state.prixMax !== Infinity) n++;
+  n += state.carburants.length + state.transmissions.length;
+  if (state.kmMax < KM_MAX_GLOBAL) n++;
+  var badge = document.getElementById('filter-badge-toggle');
+  if (n > 0) { badge.textContent = n; badge.style.display = ''; }
+  else { badge.style.display = 'none'; }
+}
+
+function showSkeletons() {
+  var grid = document.getElementById('car-grid');
+  grid.innerHTML = '';
+  for (var i = 0; i < 8; i++) {
+    var div = document.createElement('div');
+    div.style.cssText = 'background:#181818;border-radius:14px;overflow:hidden;';
+    div.innerHTML = '<div class="skeleton" style="aspect-ratio:4/3;"></div><div style="padding:16px 18px 20px;"><div class="skeleton" style="height:22px;width:70%;margin-bottom:8px;"></div><div class="skeleton" style="height:14px;width:50%;margin-bottom:14px;"></div><div class="skeleton" style="height:12px;width:90%;"></div></div>';
+    grid.appendChild(div);
+  }
+}
+
+/* ════════════════════════════════════════
+   RANGE SLIDERS
+════════════════════════════════════════ */
+function onRangePrixMin() {
+  var rMin = document.getElementById('range-prix-min');
+  var rMax = document.getElementById('range-prix-max');
+  if (parseInt(rMin.value) > parseInt(rMax.value)) rMin.value = rMax.value;
+  document.getElementById('f-prix-min').value = rMin.value;
+  document.getElementById('range-prix-min-label').textContent = fmtPrix(parseInt(rMin.value));
+  updatePriceFill();
+  applyFilters();
+}
+function onRangePrixMax() {
+  var rMin = document.getElementById('range-prix-min');
+  var rMax = document.getElementById('range-prix-max');
+  if (parseInt(rMax.value) < parseInt(rMin.value)) rMax.value = rMin.value;
+  document.getElementById('f-prix-max').value = rMax.value;
+  document.getElementById('range-prix-max-label').textContent = fmtPrix(parseInt(rMax.value));
+  updatePriceFill();
+  applyFilters();
+}
+function onRangeKm() {
+  var v = parseInt(document.getElementById('range-km').value);
+  document.getElementById('range-km-label').textContent = fmtKm(v);
+  updateKmFill();
+  applyFilters();
+}
+function updatePriceFill() {
+  var rMin = document.getElementById('range-prix-min');
+  var rMax = document.getElementById('range-prix-max');
+  var min  = parseInt(rMin.min), max = parseInt(rMax.max);
+  var l = (parseInt(rMin.value) - min) / (max - min) * 100;
+  var r = (parseInt(rMax.value) - min) / (max - min) * 100;
+  var fill = document.getElementById('price-fill');
+  fill.style.left  = l + '%';
+  fill.style.width = (r - l) + '%';
+}
+function updateKmFill() {
+  var rKm  = document.getElementById('range-km');
+  var pct  = (parseInt(rKm.value) - parseInt(rKm.min)) / (parseInt(rKm.max) - parseInt(rKm.min)) * 100;
+  document.getElementById('km-fill').style.width = pct + '%';
+}
+
+/* ════════════════════════════════════════
+   MARQUE → MODELE cascade
+════════════════════════════════════════ */
+function onMarqueChange() {
+  var marque = document.getElementById('f-marque').value;
+  document.getElementById('mf-marque').value = marque;
+  populateModeles(marque, 'f-modele');
+  populateModeles(marque, 'mf-modele');
+  applyFilters();
+}
+function onMarqueChangeMobile() {
+  var marque = document.getElementById('mf-marque').value;
+  document.getElementById('f-marque').value = marque;
+  populateModeles(marque, 'f-modele');
+  populateModeles(marque, 'mf-modele');
+  applyFilters();
+}
+function populateModeles(marque, selectId) {
+  var sel = document.getElementById(selectId);
+  var modeles = marque
+    ? [...new Set(ALL_CARS.filter(c => c.marque === marque).map(c => c.modele).filter(Boolean))].sort()
+    : [];
+  sel.innerHTML = '<option value="">Tous les modèles</option>';
+  modeles.forEach(function(m) {
+    sel.innerHTML += '<option value="' + esc(m) + '">' + esc(m) + '</option>';
+  });
+}
+
+/* ════════════════════════════════════════
+   CHIPS TOGGLE
+════════════════════════════════════════ */
+function toggleChip(stateKey, val, containerId) {
+  var idx = state[stateKey].indexOf(val);
+  if (idx === -1) state[stateKey].push(val);
+  else state[stateKey].splice(idx, 1);
+  // update chip visuals
+  var el = document.getElementById(containerId);
+  if (el) {
+    el.querySelectorAll('.chip-btn').forEach(function(btn) {
+      btn.classList.toggle('active', state[stateKey].includes(btn.dataset.val));
+    });
+  }
+  applyFilters();
+}
+
+/* ════════════════════════════════════════
+   REMOVE ACTIVE FILTER chips
+════════════════════════════════════════ */
+window.removeSearch = function() { document.getElementById('search-input').value = ''; applyFilters(); };
+window.removeMarque = function() { document.getElementById('f-marque').value = ''; document.getElementById('mf-marque').value = ''; populateModeles('', 'f-modele'); populateModeles('', 'mf-modele'); applyFilters(); };
+window.removeModele = function() { document.getElementById('f-modele').value = ''; document.getElementById('mf-modele').value = ''; applyFilters(); };
+window.removePrixMin = function() { document.getElementById('f-prix-min').value = ''; document.getElementById('range-prix-min').value = PRICE_MIN_GLOBAL; document.getElementById('range-prix-min-label').textContent = fmtPrix(PRICE_MIN_GLOBAL); updatePriceFill(); applyFilters(); };
+window.removePrixMax = function() { document.getElementById('f-prix-max').value = ''; document.getElementById('range-prix-max').value = PRICE_MAX_GLOBAL; document.getElementById('range-prix-max-label').textContent = fmtPrix(PRICE_MAX_GLOBAL); updatePriceFill(); applyFilters(); };
+window.removeCarburant = function(v) { state.carburants = state.carburants.filter(x => x !== v); syncChips('f-carburant', 'carburants'); syncChips('mf-carburant', 'carburants'); applyFilters(); };
+window.removeTransmission = function(v) { state.transmissions = state.transmissions.filter(x => x !== v); syncChips('f-transmission', 'transmissions'); applyFilters(); };
+window.removeKmMax = function() { document.getElementById('range-km').value = KM_MAX_GLOBAL; document.getElementById('range-km-label').textContent = fmtKm(KM_MAX_GLOBAL); updateKmFill(); applyFilters(); };
+
+window.resetFilters = function() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('f-marque').value = '';
+  document.getElementById('mf-marque').value = '';
+  document.getElementById('f-modele').innerHTML = '<option value="">Tous les modèles</option>';
+  document.getElementById('mf-modele').innerHTML = '<option value="">Tous les modèles</option>';
+  document.getElementById('f-prix-min').value = '';
+  document.getElementById('f-prix-max').value = '';
+  document.getElementById('mf-prix-max').value = '';
+  document.getElementById('mf-km-max').value = '';
+  document.getElementById('range-prix-min').value = PRICE_MIN_GLOBAL;
+  document.getElementById('range-prix-max').value = PRICE_MAX_GLOBAL;
+  document.getElementById('range-km').value = KM_MAX_GLOBAL;
+  document.getElementById('range-prix-min-label').textContent = fmtPrix(PRICE_MIN_GLOBAL);
+  document.getElementById('range-prix-max-label').textContent = fmtPrix(PRICE_MAX_GLOBAL);
+  document.getElementById('range-km-label').textContent = fmtKm(KM_MAX_GLOBAL);
+  updatePriceFill(); updateKmFill();
+  document.getElementById('f-annee-min').value = '';
+  document.getElementById('f-annee-max').value = '';
+  document.getElementById('sort-select').value = 'default';
+  state.carburants = []; state.transmissions = [];
+  ['f-carburant','mf-carburant','f-transmission'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.querySelectorAll('.chip-btn').forEach(function(b) { b.classList.remove('active'); });
+  });
+  applyFilters();
+};
+
+/* ════════════════════════════════════════
+   MOBILE FILTER TOGGLE
+════════════════════════════════════════ */
+var filterToggle = document.getElementById('filter-toggle');
+var mobilePanel  = document.getElementById('mobile-filter-panel');
+filterToggle.addEventListener('click', function() {
+  var open = mobilePanel.style.display !== 'none' && mobilePanel.style.display !== '';
+  if (open) {
+    mobilePanel.style.display = 'none';
+    filterToggle.setAttribute('aria-expanded', 'false');
+  } else {
+    mobilePanel.style.display = 'block';
+    filterToggle.setAttribute('aria-expanded', 'true');
+  }
+});
+
+/* ════════════════════════════════════════
+   SEARCH DEBOUNCE
+════════════════════════════════════════ */
+var searchTimer;
+document.getElementById('search-input').addEventListener('input', function() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(applyFilters, 200);
+});
+
+/* ════════════════════════════════════════
+   UTILITIES
+════════════════════════════════════════ */
+function fmtPrix(n) {
+  if (!n && n !== 0) return '—';
+  return n.toLocaleString('fr-FR') + ' €';
+}
+function fmtKm(n) {
+  if (!n && n !== 0) return '—';
+  return n.toLocaleString('fr-FR') + ' km';
+}
+function esc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ════════════════════════════════════════
+   THEME TOGGLE
+════════════════════════════════════════ */
+var themeBtn = document.getElementById('theme-toggle');
+var iconMoon = document.getElementById('icon-moon');
+var iconSun  = document.getElementById('icon-sun');
+var isLight  = localStorage.getItem('theme') === 'light';
+function applyTheme(light) {
+  if (light) { document.body.classList.add('light'); iconMoon.style.display = 'none'; iconSun.style.display = ''; }
+  else { document.body.classList.remove('light'); iconMoon.style.display = ''; iconSun.style.display = 'none'; }
+}
+applyTheme(isLight);
+themeBtn.addEventListener('click', function() { isLight = !isLight; localStorage.setItem('theme', isLight ? 'light' : 'dark'); applyTheme(isLight); });
+
+/* ════════════════════════════════════════
+   MOBILE MENU
+════════════════════════════════════════ */
+var menuToggle = document.getElementById('menu-toggle');
+var mobileMenu = document.getElementById('mobile-menu');
+menuToggle.addEventListener('click', function() {
+  var isOpen = mobileMenu.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+});
+
+/* ════════════════════════════════════════
+   BOOT
+════════════════════════════════════════ */
+loadCars();
+
+})();
+
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('menu-toggle').setAttribute('aria-expanded', 'false');
+}
+</script>
+
+<!-- ── Favorites ── -->
+<script>
+(function() {
+  var authToken = localStorage.getItem('azf_token');
+  var userFavs  = [];
+
+  function updateFavBtn(btn, isFav) {
+    var icon = btn.querySelector('.fav-card-icon');
+    if (isFav) {
+      icon.setAttribute('fill', '#c00f08'); icon.setAttribute('stroke', '#c00f08');
+      btn.style.background = 'rgba(192,15,8,0.55)'; btn.style.borderColor = 'rgba(192,15,8,0.80)';
+    } else {
+      icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'rgba(255,255,255,0.70)');
+      btn.style.background = 'rgba(0,0,0,0.50)'; btn.style.borderColor = 'rgba(255,255,255,0.15)';
+    }
+  }
+
+  window.cardFav = function(e, carId) {
+    e.stopPropagation();
+    if (!authToken) { window.location.href = 'login.html?redirect=nos-vehicules.html'; return; }
+    var btn = e.currentTarget;
+    fetch('/api/users/favorites', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+      body: JSON.stringify({ carId: carId }),
+    }).then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.hasOwnProperty('added')) {
+          if (d.added) { userFavs.push(carId); } else { userFavs = userFavs.filter(function(id){ return id !== carId; }); }
+          updateFavBtn(btn, d.added);
+        }
+      }).catch(function(){});
+  };
+
+  window.applyFavButtons = function() {
+    document.querySelectorAll('.fav-card-btn').forEach(function(btn) {
+      updateFavBtn(btn, userFavs.indexOf(btn.dataset.id) !== -1);
+    });
+  };
+
+  if (authToken) {
+    fetch('/api/users/favorites', { headers: { 'Authorization': 'Bearer ' + authToken } })
+      .then(function(r) { return r.json(); })
+      .then(function(cars) {
+        userFavs = (Array.isArray(cars) ? cars : []).map(function(c){ return c.id; });
+        window.applyFavButtons();
+      }).catch(function(){});
+  }
+})();
+</script>
+
+<!-- ── Auth Nav Widget ── -->
+<style>
+  .nav-user-btn { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e8e6e4;font-family:'Inter',sans-serif;font-size:0.8125rem;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;position:relative;transition:background 150ms ease,border-color 150ms ease;white-space:nowrap; }
+  .nav-user-btn:hover { background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.22); }
+  .nav-user-avatar { width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#c00f08 0%,#5a0603 100%);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:800;color:#fff;flex-shrink:0; }
+  .nav-dropdown { position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.12);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.40);padding:6px;display:none;z-index:200; }
+  .nav-dropdown.open { display:block; }
+  .nav-dropdown a, .nav-dropdown button { display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;font-size:0.8125rem;font-weight:500;color:rgba(255,255,255,0.70);text-decoration:none;background:none;border:none;cursor:pointer;transition:background 130ms ease,color 130ms ease;text-align:left;font-family:'Inter',sans-serif; }
+  .nav-dropdown a:hover, .nav-dropdown button:hover { background:rgba(255,255,255,0.07);color:#fff; }
+  .nav-dropdown .sep { border:none;border-top:1px solid rgba(255,255,255,0.08);margin:4px 0; }
+  .nav-dropdown .danger { color:#ff7b75 !important; }
+  .nav-dropdown .danger:hover { background:rgba(255,95,88,0.08) !important; }
+  .nav-login-btn { display:flex;align-items:center;gap:6px;background:#c00f08;color:#fff;font-family:'Inter',sans-serif;font-size:0.8125rem;font-weight:600;padding:8px 16px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:background 150ms ease,transform 150ms ease;box-shadow:0 2px 8px rgba(192,15,8,0.35); }
+  .nav-login-btn:hover { background:#8b0905;transform:translateY(-1px); }
+</style>
+<script>
+(function() {
+  var token = localStorage.getItem('azf_token');
+  var navAuthEl    = document.getElementById('nav-auth');
+  var mobileAuthEl = document.getElementById('mobile-auth');
+  function initials(n) { return (n||'?').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase(); }
+  function renderLoggedIn(user) {
+    var isAdmin = user.role === 'admin';
+    var html = '<div style="position:relative;">'
+      + '<button class="nav-user-btn" onclick="toggleAuthDrop()" id="auth-user-btn"><span class="nav-user-avatar">' + initials(user.name) + '</span>' + user.name.split(' ')[0]
+      + '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>'
+      + '<div class="nav-dropdown" id="auth-dropdown">'
+      + (isAdmin ? '<a href="admin.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Panneau admin</a>' : '')
+      + '<a href="profile.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Mon profil</a>'
+      + '<a href="profile.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="#c00f08" stroke="#c00f08" stroke-width="0"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Mes favoris</a>'
+      + '<hr class="sep"><button class="danger" onclick="navLogout()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Déconnexion</button>'
+      + '</div></div>';
+    if (navAuthEl) navAuthEl.innerHTML = html;
+    if (mobileAuthEl) mobileAuthEl.innerHTML = '<a href="profile.html" class="mobile-link">Mon compte</a>' + (isAdmin ? '<a href="admin.html" class="mobile-link" style="color:#c00f08;">Admin</a>' : '');
+  }
+  function renderLoggedOut() {
+    if (navAuthEl) navAuthEl.innerHTML = '<a href="login.html" class="nav-login-btn">Connexion</a>';
+    if (mobileAuthEl) mobileAuthEl.innerHTML = '<a href="login.html" class="mobile-link" style="color:#c00f08;">Connexion / Inscription</a>';
+  }
+  window.toggleAuthDrop = function() { var d = document.getElementById('auth-dropdown'); if (d) d.classList.toggle('open'); };
+  document.addEventListener('click', function(e) {
+    var btn = document.getElementById('auth-user-btn'); var drop = document.getElementById('auth-dropdown');
+    if (drop && btn && !btn.contains(e.target) && !drop.contains(e.target)) drop.classList.remove('open');
+  });
+  window.navLogout = function() {
+    fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('azf_token')||'') } });
+    localStorage.removeItem('azf_token'); localStorage.removeItem('azf_user'); renderLoggedOut();
+  };
+  if (!token) { renderLoggedOut(); return; }
+  try { var cached = JSON.parse(localStorage.getItem('azf_user') || 'null'); if (cached) renderLoggedIn(cached); } catch(e) {}
+  fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.user) { localStorage.setItem('azf_user', JSON.stringify(d.user)); renderLoggedIn(d.user); }
+      else { localStorage.removeItem('azf_token'); localStorage.removeItem('azf_user'); renderLoggedOut(); }
+    }).catch(function() { renderLoggedOut(); });
+})();
+</script>
+
+</body>
+</html>

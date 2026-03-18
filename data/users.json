@@ -1,0 +1,38 @@
+{
+  "users": [
+    {
+      "id": "admin-001",
+      "email": "admin@azfauto.fr",
+      "passwordHash": "365ce77a3737b0e48920e6a3719a8ad8c2f5fcc8f713470239f68a0b569945a9",
+      "name": "Admin AZF",
+      "role": "admin",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "favorites": [],
+      "history": []
+    },
+    {
+      "id": "user-f32757bcb37a",
+      "email": "jean@test.fr",
+      "passwordHash": "937e8d5fbb48bd4949536cd65b8d35c426b80d2f830c5c308e2cdec422ae2244",
+      "name": "Jean Dupont",
+      "role": "user",
+      "createdAt": "2026-03-18T01:34:39.760Z",
+      "favorites": [],
+      "history": []
+    },
+    {
+      "id": "user-b43d2fc41dc3",
+      "email": "eliasbeatpro@gmail.com",
+      "passwordHash": "30400858e2fe6aae4358ac621cb5b48ccadad04549393ab6deb3939c78888cd4",
+      "name": "Elias Fadili",
+      "role": "user",
+      "createdAt": "2026-03-18T01:37:35.453Z",
+      "favorites": [
+        "peugeot"
+      ],
+      "history": [
+        "peugeot"
+      ]
+    }
+  ]
+}

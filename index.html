@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="fr" style="color-scheme:dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AZF AUTO — Véhicules d'occasion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand:        '#c00f08',
+            'brand-dark': '#8b0905',
+            'brand-deeper':'#5a0603',
+            'brand-glow': 'rgba(192,15,8,0.18)',
+            ink:          '#0d0d0d',
+            'ink-soft':   '#3a3a3a',
+            'ink-muted':  '#7a7a7a',
+            'surface-2':  '#f7f5f4',
+            'surface-3':  '#ede9e8',
+            border:       '#e0dada',
+          },
+          fontFamily: {
+            display: ['"Barlow Condensed"', 'sans-serif'],
+            body:    ['"Inter"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body { margin: 0; background: #0d0d0d; color: #e8e6e4; overflow-x: hidden; }
+
+    section[id] { scroll-margin-top: 64px; }
+
+    /* ── Custom shadows ── */
+    .shadow-card {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+    }
+    .shadow-card:hover {
+      box-shadow: 0 4px 8px rgba(192,15,8,0.10), 0 16px 40px rgba(0,0,0,0.14), 0 0 0 1px rgba(192,15,8,0.10);
+    }
+    .shadow-btn {
+      box-shadow: 0 2px 6px rgba(192,15,8,0.40), 0 1px 2px rgba(0,0,0,0.20);
+    }
+    .shadow-btn:hover {
+      box-shadow: 0 4px 14px rgba(192,15,8,0.50), 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .shadow-nav {
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.10);
+    }
+    .shadow-panel {
+      box-shadow: 0 8px 40px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    /* ── Nav ── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      transition: background 300ms ease, box-shadow 300ms ease;
+      background: transparent;
+    }
+    #nav.nav-scrolled {
+      background: rgba(13,13,13,0.97);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.40);
+    }
+    #nav.nav-scrolled .nav-link { color: #c8c4c2; }
+    #nav.nav-scrolled .nav-link:hover { color: #c00f08; }
+    #nav.nav-scrolled .nav-logo { color: #fff; }
+    #nav.nav-scrolled .nav-phone { color: #c8c4c2; }
+    #nav.nav-scrolled .hamburger-line { background: #e8e6e4; }
+
+    .nav-link {
+      color: rgba(255,255,255,0.85);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      text-decoration: none;
+      transition: color 200ms ease;
+    }
+    .nav-link:hover { color: #fff; }
+    .nav-link:focus-visible { outline: 2px solid rgba(192,15,8,0.5); outline-offset: 4px; border-radius: 2px; }
+
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.01em;
+      color: #fff;
+      text-decoration: none;
+      transition: color 200ms ease, opacity 200ms ease;
+    }
+    .nav-logo:hover { opacity: 0.85; }
+    .nav-logo span { color: #c00f08; }
+
+    .nav-phone {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 200ms ease;
+    }
+    .nav-phone:hover { color: #fff; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #c00f08;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 9px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      box-shadow: 0 2px 6px rgba(192,15,8,0.40), 0 1px 2px rgba(0,0,0,0.20);
+      transition: background 200ms ease, transform 150ms ease, box-shadow 200ms ease;
+    }
+    .btn-primary:hover {
+      background: #8b0905;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(192,15,8,0.50), 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .btn-primary:active {
+      background: #5a0603;
+      transform: translateY(0);
+    }
+    .btn-primary:focus-visible {
+      outline: 2px solid rgba(192,15,8,0.6);
+      outline-offset: 3px;
+    }
+
+    .btn-primary-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #c00f08;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      box-shadow: 0 4px 16px rgba(192,15,8,0.45), 0 1px 3px rgba(0,0,0,0.25);
+      transition: background 200ms ease, transform 150ms ease, box-shadow 200ms ease;
+    }
+    .btn-primary-lg:hover {
+      background: #8b0905;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(192,15,8,0.55), 0 2px 6px rgba(0,0,0,0.30);
+    }
+    .btn-primary-lg:active {
+      background: #5a0603;
+      transform: translateY(0);
+    }
+    .btn-primary-lg:focus-visible {
+      outline: 2px solid rgba(192,15,8,0.6);
+      outline-offset: 3px;
+    }
+
+    /* ── Slider ── */
+    .slides-wrapper {
+      display: flex;
+      transition: transform 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+    .slide { min-width: 100%; height: 100%; position: relative; }
+
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.30);
+      color: #fff;
+      cursor: pointer;
+      transition: background 200ms ease, transform 150ms ease;
+    }
+    .slider-arrow:hover {
+      background: rgba(255,255,255,0.35);
+      transform: translateY(-50%) scale(1.1);
+    }
+    .slider-arrow:active { transform: translateY(-50%) scale(0.95); }
+    .slider-arrow:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 2px; }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.40);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: width 300ms ease, background 300ms ease;
+    }
+    .dot.active {
+      width: 24px;
+      background: #fff;
+    }
+    .dot:focus-visible { outline: 2px solid rgba(255,255,255,0.7); outline-offset: 2px; }
+
+    /* ── Form inputs ── */
+    .form-select {
+      width: 100%;
+      background: #1e1e1e;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 10px 36px 10px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 400;
+      color: #e8e6e4;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a7a7a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      cursor: pointer;
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .form-select:focus {
+      outline: none;
+      border-color: #c00f08;
+      box-shadow: 0 0 0 3px rgba(192,15,8,0.12);
+    }
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 5px;
+    }
+
+    /* ── Cards ── */
+    .car-card {
+      background: #181818;
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform 300ms ease-out, box-shadow 300ms ease-out;
+      cursor: pointer;
+    }
+    .car-card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* ── Hamburger ── */
+    .hamburger-line {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 2px;
+      transition: transform 250ms ease, opacity 250ms ease;
+    }
+    #menu-toggle[aria-expanded="true"] .line-1 {
+      transform: translateY(7px) rotate(45deg);
+    }
+    #menu-toggle[aria-expanded="true"] .line-2 {
+      opacity: 0;
+    }
+    #menu-toggle[aria-expanded="true"] .line-3 {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* ── Mobile menu ── */
+    #mobile-menu {
+      display: none;
+      background: rgba(13,13,13,0.98);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    #mobile-menu.open { display: block; }
+
+    /* ── Grain texture ── */
+    .grain-overlay::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.045;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Slide caption ── */
+    .slide-caption {
+      position: absolute;
+      bottom: 3rem;
+      left: 2.5rem;
+      z-index: 10;
+      color: #fff;
+      /* On desktop, stay within the slider area (not behind search panel) */
+      max-width: calc(100% - 3rem);
+    }
+    @media (min-width: 768px) {
+      .slide-caption {
+        left: 3rem;
+        max-width: 420px;
+      }
+    }
+
+    /* ── Utility ── */
+    .tracking-hero { letter-spacing: -0.03em; }
+    .tracking-section { letter-spacing: -0.025em; }
+  </style>
+</head>
+<body>
+
+<!-- ────────────────────────────────────────────────────────────
+     ① NAVIGATION
+──────────────────────────────────────────────────────────── -->
+<header id="nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+
+    <!-- Logo -->
+    <a href="#" class="nav-logo">AZF<span>&nbsp;AUTO</span></a>
+
+    <!-- Desktop links -->
+    <nav style="display:flex;align-items:center;gap:32px;" class="hidden md:flex">
+      <a href="#hero" class="nav-link">Accueil</a>
+      <a href="nos-vehicules.html" class="nav-link">Nos véhicules</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </nav>
+
+    <!-- Right cluster -->
+    <div style="display:flex;align-items:center;gap:16px;">
+      <!-- Theme toggle -->
+      <button id="theme-toggle" aria-label="Basculer le thème"
+              style="background:none;border:1.5px solid rgba(255,255,255,0.22);border-radius:8px;cursor:pointer;padding:7px 9px;display:flex;align-items:center;color:rgba(255,255,255,0.80);transition:border-color 200ms ease,color 200ms ease,background 200ms ease;"
+              onmouseover="this.style.borderColor='rgba(255,255,255,0.55)';this.style.color='#fff'"
+              onmouseout="this.style.borderColor='rgba(255,255,255,0.22)';this.style.color='rgba(255,255,255,0.80)'">
+        <!-- Moon icon (dark mode active) -->
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+        <!-- Sun icon (light mode active) -->
+        <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+
+      <a href="tel:+33363381844" class="nav-phone hidden md:flex">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+        </svg>
+        03 63 38 18 44
+      </a>
+      <div id="nav-auth"></div>
+
+      <!-- Hamburger (mobile) -->
+      <button id="menu-toggle" aria-expanded="false" aria-label="Menu" class="md:hidden"
+              style="background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;">
+        <span class="hamburger-line line-1"></span>
+        <span class="hamburger-line line-2"></span>
+        <span class="hamburger-line line-3"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div id="mobile-menu">
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:4px;">
+      <a href="#hero"        class="mobile-link" onclick="closeMobileMenu()">Accueil</a>
+      <a href="nos-vehicules.html" class="mobile-link" onclick="closeMobileMenu()">Nos véhicules</a>
+      <a href="contact.html" class="mobile-link" onclick="closeMobileMenu()">Contact</a>
+      <div id="mobile-auth" style="margin-top:4px;"></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0;" />
+      <a href="tel:+33363381844" style="display:flex;align-items:center;gap:8px;color:#c8c4c2;font-size:0.9375rem;font-weight:500;text-decoration:none;padding:8px 0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+        </svg>
+        03 63 38 18 44
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .mobile-link {
+    display: block;
+    padding: 10px 0;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: #c8c4c2;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    transition: color 150ms ease;
+  }
+  .mobile-link:hover { color: #c00f08; }
+</style>
+
+<!-- ────────────────────────────────────────────────────────────
+     ② HERO SLIDER
+──────────────────────────────────────────────────────────── -->
+<section id="hero" style="position:relative;min-height:100vh;display:flex;flex-direction:column;overflow:hidden;" class="md:flex-row">
+
+  <!-- Slider (left / full on mobile) -->
+  <div id="slider" style="position:relative;flex:1;min-height:60vh;overflow:hidden;" class="md:min-h-screen">
+
+    <!-- Slides wrapper -->
+    <div class="slides-wrapper" style="position:absolute;inset:0;">
+      <!-- Slide 1 -->
+      <div class="slide">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Peugeot_3008_BlueHDi_180_EAT8_GT_%28II%29_%E2%80%93_Frontansicht%2C_25._November_2018%2C_D%C3%BCsseldorf.jpg"
+             alt="Peugeot 3008 GT Line"
+             style="width:100%;height:100%;object-fit:cover;" />
+        <div style="position:absolute;inset:0;background:rgba(192,15,8,0.15);mix-blend-mode:multiply;"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.20) 50%, transparent 100%);"></div>
+        <div class="slide-caption">
+          <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.65);margin-bottom:8px;font-weight:600;">Véhicule en vedette</p>
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.0;letter-spacing:-0.03em;margin:0;">
+            Peugeot 3008<br/>GT Line
+          </h2>
+          <p style="margin-top:10px;color:rgba(255,255,255,0.75);font-size:0.9375rem;font-weight:500;">24 500 € &nbsp;·&nbsp; 38 000 km &nbsp;·&nbsp; Diesel</p>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/2020_Volkswagen_Golf_Style_1.5_Front.jpg"
+             alt="Volkswagen Golf 8"
+             style="width:100%;height:100%;object-fit:cover;" />
+        <div style="position:absolute;inset:0;background:rgba(192,15,8,0.12);mix-blend-mode:multiply;"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.20) 50%, transparent 100%);"></div>
+        <div class="slide-caption">
+          <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.65);margin-bottom:8px;font-weight:600;">Véhicule en vedette</p>
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.0;letter-spacing:-0.03em;margin:0;">
+            Volkswagen<br/>Golf 8 Life
+          </h2>
+          <p style="margin-top:10px;color:rgba(255,255,255,0.75);font-size:0.9375rem;font-weight:500;">19 900 € &nbsp;·&nbsp; 22 000 km &nbsp;·&nbsp; Essence</p>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Renault_Clio_V_IMG_4178.jpg"
+             alt="Renault Clio V"
+             style="width:100%;height:100%;object-fit:cover;" />
+        <div style="position:absolute;inset:0;background:rgba(192,15,8,0.15);mix-blend-mode:multiply;"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.20) 50%, transparent 100%);"></div>
+        <div class="slide-caption">
+          <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.65);margin-bottom:8px;font-weight:600;">Véhicule en vedette</p>
+          <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;line-height:1.0;letter-spacing:-0.03em;margin:0;">
+            Renault<br/>Clio V Intens
+          </h2>
+          <p style="margin-top:10px;color:rgba(255,255,255,0.75);font-size:0.9375rem;font-weight:500;">12 900 € &nbsp;·&nbsp; 45 000 km &nbsp;·&nbsp; Essence</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prev arrow -->
+    <button id="prev" class="slider-arrow" style="left:16px;" aria-label="Précédent">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+
+    <!-- Next arrow -->
+    <button id="next" class="slider-arrow" style="right:16px;" aria-label="Suivant">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+
+    <!-- Dot indicators -->
+    <div id="dots" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10;" class="md:hidden">
+      <button class="dot active" aria-label="Slide 1"></button>
+      <button class="dot" aria-label="Slide 2"></button>
+      <button class="dot" aria-label="Slide 3"></button>
+    </div>
+
+    <!-- Desktop dots (below caption area) -->
+    <div id="dots-desktop" style="position:absolute;bottom:1.5rem;left:3rem;display:none;gap:8px;z-index:10;align-items:center;" class="md:flex">
+      <button class="dot-d active-d" aria-label="Slide 1"></button>
+      <button class="dot-d" aria-label="Slide 2"></button>
+      <button class="dot-d" aria-label="Slide 3"></button>
+    </div>
+  </div>
+
+  <!-- Search Panel (right) -->
+  <div class="search-panel" style="
+    width:100%;
+    background:rgba(18,18,18,0.97);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:40px 32px;
+    z-index:30;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.50);
+  ">
+    <div style="margin-bottom:4px;">
+      <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.12em;color:#c00f08;font-weight:700;margin:0 0 8px;">Trouver un véhicule</p>
+      <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.75rem;font-weight:800;color:#e8e6e4;letter-spacing:-0.02em;margin:0 0 4px;">Recherche rapide</h3>
+      <p style="font-size:0.8125rem;color:#888;margin:0 0 24px;line-height:1.5;">Trouvez votre véhicule idéal parmi notre sélection.</p>
+    </div>
+
+    <form onsubmit="return false;" style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <label class="form-label">Marque</label>
+        <select class="form-select">
+          <option value="">Toutes les marques</option>
+          <option>Renault</option>
+          <option>Peugeot</option>
+          <option>Volkswagen</option>
+          <option>Dacia</option>
+          <option>Citroën</option>
+          <option>Ford</option>
+          <option>Opel</option>
+          <option>Toyota</option>
+          <option>BMW</option>
+          <option>Mercedes</option>
+          <option>Audi</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Modèle</label>
+        <select class="form-select">
+          <option value="">Tous les modèles</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Budget maximum</label>
+        <select class="form-select">
+          <option value="">Sans limite</option>
+          <option>5 000 €</option>
+          <option>8 000 €</option>
+          <option>10 000 €</option>
+          <option>15 000 €</option>
+          <option>20 000 €</option>
+          <option>25 000 €</option>
+          <option>30 000 €</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Carburant</label>
+        <select class="form-select">
+          <option value="">Tous</option>
+          <option>Essence</option>
+          <option>Diesel</option>
+          <option>Hybride</option>
+          <option>Électrique</option>
+          <option>GPL</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Kilométrage maximum</label>
+        <select class="form-select">
+          <option value="">Sans limite</option>
+          <option>20 000 km</option>
+          <option>50 000 km</option>
+          <option>80 000 km</option>
+          <option>100 000 km</option>
+          <option>150 000 km</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-primary" style="margin-top:6px;justify-content:center;padding:12px 18px;font-size:0.9375rem;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Rechercher
+      </button>
+    </form>
+  </div>
+
+</section>
+
+<!-- Desktop dot style -->
+<style>
+  .dot-d {
+    width: 8px;
+    height: 8px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.35);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: width 300ms ease, background 300ms ease;
+  }
+  .dot-d.active-d {
+    width: 24px;
+    background: #fff;
+  }
+  .dot-d:focus-visible { outline: 2px solid rgba(255,255,255,0.7); outline-offset: 2px; }
+
+  @media (min-width: 768px) {
+    .search-panel {
+      width: 380px !important;
+      position: absolute !important;
+      right: 0 !important;
+      top: 0 !important;
+      height: 100% !important;
+    }
+    #dots { display: none !important; }
+    #dots-desktop { display: flex !important; }
+  }
+</style>
+
+<!-- ────────────────────────────────────────────────────────────
+     ③ NOUVEAUTÉS
+──────────────────────────────────────────────────────────── -->
+<section id="nouveautes" style="background:#111111;padding:96px 0;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+
+    <!-- Section header -->
+    <div style="margin-bottom:56px;">
+      <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.12em;color:#c00f08;font-weight:700;margin:0 0 10px;">Nos dernières arrivées</p>
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;color:#e8e6e4;letter-spacing:-0.025em;margin:0;">
+        Nouveautés
+      </h2>
+    </div>
+
+    <!-- Card grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;">
+
+      <!-- Card 1: Renault Clio V -->
+      <article class="car-card shadow-card" tabindex="0" onclick="window.location.href='vehicule.html?id=clio'"
+               style="focus-visible:outline:2px solid #c00f08;focus-visible:outline-offset:2px;">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Renault_Clio_V_IMG_4178.jpg"
+               alt="Renault Clio V Intens"
+               style="width:100%;height:100%;object-fit:cover;transition:transform 500ms ease-out;"
+               class="card-img" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 55%);pointer-events:none;"></div>
+          <div style="position:absolute;inset:0;background:rgba(192,15,8,0.10);mix-blend-mode:multiply;pointer-events:none;"></div>
+          <!-- Fuel badge -->
+          <span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);color:#0d0d0d;font-size:0.7rem;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid rgba(0,0,0,0.08);">Essence</span>
+          <!-- Price -->
+          <div style="position:absolute;bottom:12px;left:14px;">
+            <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.625rem;font-weight:800;color:#fff;margin:0;letter-spacing:-0.01em;">12 900 €</p>
+          </div>
+        </div>
+        <div style="padding:16px 18px 20px;">
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;color:#e8e6e4;letter-spacing:-0.01em;margin:0 0 2px;">Renault Clio V</h3>
+          <p style="font-size:0.8125rem;color:#666;margin:0 0 14px;" class="card-subtitle">Intens &nbsp;·&nbsp; 2021</p>
+          <div class="card-meta" style="display:flex;gap:16px;font-size:0.8rem;color:#aaa;font-weight:500;">
+            <span style="display:flex;align-items:center;gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              45 000 km
+            </span>
+            <span style="display:flex;align-items:center;gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l9-6 9 6v14"/><path d="M9 22V12h6v10"/></svg>
+              Essence
+            </span>
+          </div>
+          <div class="card-divider" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">
+            <a href="vehicule.html?id=clio" style="color:#c00f08;font-size:0.875rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms ease;letter-spacing:0.01em;"
+               onmouseover="this.style.color='#8b0905'" onmouseout="this.style.color='#c00f08'">
+              Voir la fiche
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Peugeot 3008 -->
+      <article class="car-card shadow-card" tabindex="0" onclick="window.location.href='vehicule.html?id=peugeot'">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Peugeot_3008_BlueHDi_180_EAT8_GT_%28II%29_%E2%80%93_Frontansicht%2C_25._November_2018%2C_D%C3%BCsseldorf.jpg"
+               alt="Peugeot 3008 GT Line"
+               style="width:100%;height:100%;object-fit:cover;transition:transform 500ms ease-out;"
+               class="card-img" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 55%);pointer-events:none;"></div>
+          <div style="position:absolute;inset:0;background:rgba(192,15,8,0.10);mix-blend-mode:multiply;pointer-events:none;"></div>
+          <span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);color:#0d0d0d;font-size:0.7rem;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid rgba(0,0,0,0.08);">Diesel</span>
+          <div style="position:absolute;bottom:12px;left:14px;">
+            <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.625rem;font-weight:800;color:#fff;margin:0;letter-spacing:-0.01em;">24 500 €</p>
+          </div>
+        </div>
+        <div style="padding:16px 18px 20px;">
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;color:#e8e6e4;letter-spacing:-0.01em;margin:0 0 2px;">Peugeot 3008</h3>
+          <p style="font-size:0.8125rem;color:#666;margin:0 0 14px;" class="card-subtitle">GT Line &nbsp;·&nbsp; 2020</p>
+          <div class="card-meta" style="display:flex;gap:16px;font-size:0.8rem;color:#aaa;font-weight:500;">
+            <span style="display:flex;align-items:center;gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              38 000 km
+            </span>
+            <span style="display:flex;align-items:center;gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l9-6 9 6v14"/><path d="M9 22V12h6v10"/></svg>
+              Diesel
+            </span>
+          </div>
+          <div class="card-divider" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">
+            <a href="vehicule.html?id=peugeot" style="color:#c00f08;font-size:0.875rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms ease;"
+               onmouseover="this.style.color='#8b0905'" onmouseout="this.style.color='#c00f08'">
+              Voir la fiche
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Volkswagen Golf 8 -->
+      <article class="car-card shadow-card" tabindex="0" onclick="window.location.href='vehicule.html?id=golf'">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/2020_Volkswagen_Golf_Style_1.5_Front.jpg"
+               alt="Volkswagen Golf 8 Life"
+               style="width:100%;height:100%;object-fit:cover;transition:transform 500ms ease-out;"
+               class="card-img" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 55%);pointer-events:none;"></div>
+          <div style="position:absolute;inset:0;background:rgba(192,15,8,0.10);mix-blend-mode:multiply;pointer-events:none;"></div>
+          <span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);color:#0d0d0d;font-size:0.7rem;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid rgba(0,0,0,0.08);">Essence</span>
+          <div style="position:absolute;bottom:12px;left:14px;">
+            <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.625rem;font-weight:800;color:#fff;margin:0;letter-spacing:-0.01em;">19 900 €</p>
+          </div>
+        </div>
+        <div style="padding:16px 18px 20px;">
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;color:#e8e6e4;letter-spacing:-0.01em;margin:0 0 2px;">Volkswagen Golf 8</h3>
+          <p style="font-size:0.8125rem;color:#666;margin:0 0 14px;" class="card-subtitle">Life &nbsp;·&nbsp; 2022</p>
+          <div class="card-meta" style="display:flex;gap:16px;font-size:0.8rem;color:#aaa;font-weight:500;">
+            <span style="display:flex;align-items:center;gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              22 000 km
+            </span>
+            <span style="display:flex;align-items:center;gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l9-6 9 6v14"/><path d="M9 22V12h6v10"/></svg>
+              Essence
+            </span>
+          </div>
+          <div class="card-divider" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">
+            <a href="vehicule.html?id=golf" style="color:#c00f08;font-size:0.875rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms ease;"
+               onmouseover="this.style.color='#8b0905'" onmouseout="this.style.color='#c00f08'">
+              Voir la fiche
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4: Dacia Duster -->
+      <article class="car-card shadow-card" tabindex="0" onclick="window.location.href='vehicule.html?id=duster'">
+        <div style="position:relative;aspect-ratio:4/3;overflow:hidden;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/2018_Dacia_Duster.jpg"
+               alt="Dacia Duster Prestige"
+               style="width:100%;height:100%;object-fit:cover;transition:transform 500ms ease-out;"
+               class="card-img" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 55%);pointer-events:none;"></div>
+          <div style="position:absolute;inset:0;background:rgba(192,15,8,0.10);mix-blend-mode:multiply;pointer-events:none;"></div>
+          <span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);color:#0d0d0d;font-size:0.7rem;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid rgba(0,0,0,0.08);">Diesel</span>
+          <div style="position:absolute;bottom:12px;left:14px;">
+            <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.625rem;font-weight:800;color:#fff;margin:0;letter-spacing:-0.01em;">17 400 €</p>
+          </div>
+        </div>
+        <div style="padding:16px 18px 20px;">
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;color:#e8e6e4;letter-spacing:-0.01em;margin:0 0 2px;">Dacia Duster</h3>
+          <p style="font-size:0.8125rem;color:#666;margin:0 0 14px;" class="card-subtitle">Prestige &nbsp;·&nbsp; 2021</p>
+          <div class="card-meta" style="display:flex;gap:16px;font-size:0.8rem;color:#aaa;font-weight:500;">
+            <span style="display:flex;align-items:center;gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              51 000 km
+            </span>
+            <span style="display:flex;align-items:center;gap:5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l9-6 9 6v14"/><path d="M9 22V12h6v10"/></svg>
+              Diesel
+            </span>
+          </div>
+          <div class="card-divider" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">
+            <a href="vehicule.html?id=duster" style="color:#c00f08;font-size:0.875rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms ease;"
+               onmouseover="this.style.color='#8b0905'" onmouseout="this.style.color='#c00f08'">
+              Voir la fiche
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- Card image hover via JS (avoid transition-all) -->
+<style>
+  .car-card:hover .card-img { transform: scale(1.05); }
+  .car-card:focus-visible { outline: 2px solid #c00f08; outline-offset: 2px; }
+</style>
+
+<!-- ────────────────────────────────────────────────────────────
+     ④ CTA BANNER
+──────────────────────────────────────────────────────────── -->
+<section id="cta" style="position:relative;padding:96px 0;overflow:hidden;background:#0d0d0d;" class="grain-overlay">
+
+  <!-- Radial gradients -->
+  <div style="position:absolute;inset:0;pointer-events:none;background:
+    radial-gradient(ellipse 65% 90% at 15% 50%, rgba(192,15,8,0.20) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 70% at 85% 50%, rgba(192,15,8,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 50% 100%, rgba(192,15,8,0.08) 0%, transparent 50%);
+  "></div>
+
+  <!-- Content -->
+  <div style="position:relative;z-index:2;max-width:720px;margin:0 auto;padding:0 24px;text-align:center;">
+    <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.14em;color:#c00f08;font-weight:700;margin:0 0 16px;">Votre prochain véhicule</p>
+    <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.4rem,5vw,3.75rem);font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin:0 0 20px;">
+      Besoin d'un véhicule<br/>d'occasion&nbsp;?
+    </h2>
+    <p style="font-size:0.9375rem;color:rgba(255,255,255,0.55);line-height:1.75;margin:0 0 40px;max-width:480px;margin-left:auto;margin-right:auto;">
+      Parcourez notre sélection de véhicules soigneusement contrôlés. Financement disponible — réponse sous 24h.
+    </p>
+    <a href="nos-vehicules.html" class="btn-primary-lg">
+      Voir nos véhicules
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </a>
+  </div>
+
+</section>
+
+<!-- ────────────────────────────────────────────────────────────
+     ⑤ FOOTER
+──────────────────────────────────────────────────────────── -->
+<footer style="background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.07);padding:60px 0 0;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+
+    <!-- Main footer grid -->
+    <div style="display:grid;grid-template-columns:1fr;gap:40px;" class="md:grid-cols-4">
+
+      <!-- Brand column -->
+      <div>
+        <a href="#" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.75rem;color:#fff;text-decoration:none;letter-spacing:-0.01em;display:block;margin-bottom:12px;">
+          AZF<span style="color:#c00f08;"> AUTO</span>
+        </a>
+        <p style="font-size:0.8125rem;color:rgba(255,255,255,0.40);line-height:1.7;margin:0;">
+          Votre spécialiste en véhicules d'occasion de qualité. Sélection rigoureuse, prix transparents.
+        </p>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Contact</h4>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="tel:+33363381844" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;"
+             onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+            </svg>
+            03 63 38 18 44
+          </a>
+          <a href="mailto:contact@azf-auto-occasion.com" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;"
+             onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+            </svg>
+            contact@azf-auto-occasion.com
+          </a>
+        </div>
+      </div>
+
+      <!-- Adresse -->
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Adresse</h4>
+        <address style="font-style:normal;color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.8;">
+          12 Rue de l'Industrie<br/>
+          63000 Clermont-Ferrand<br/>
+          France
+        </address>
+      </div>
+
+      <!-- Horaires -->
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Horaires</h4>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.875rem;color:rgba(255,255,255,0.65);">
+          <div style="display:flex;justify-content:space-between;gap:16px;">
+            <span>Lun – Ven</span>
+            <span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 18h30</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:16px;">
+            <span>Samedi</span>
+            <span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 17h</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;gap:16px;">
+            <span>Dimanche</span>
+            <span style="color:rgba(255,255,255,0.40);">Fermé</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div style="margin-top:48px;padding:20px 0;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px;text-align:center;" class="md:flex-row">
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.25);margin:0;">© 2026 AZF AUTO. Tous droits réservés.</p>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.20);margin:0;">Véhicules d'occasion · Financement · Reprise</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Footer grid responsive -->
+<style>
+  @media (min-width: 768px) {
+    footer > div > div:first-child {
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+    footer > div > div:last-child {
+      flex-direction: row !important;
+    }
+  }
+</style>
+
+<!-- ────────────────────────────────────────────────────────────
+     LIGHT MODE OVERRIDES
+──────────────────────────────────────────────────────────── -->
+<style>
+  body.light { background: #fff; color: #0d0d0d; }
+
+  body.light #nav.nav-scrolled {
+    background: rgba(255,255,255,0.97);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.10);
+  }
+  body.light #nav.nav-scrolled .nav-link { color: #3a3a3a; }
+  body.light #nav.nav-scrolled .nav-link:hover { color: #c00f08; }
+  body.light #nav.nav-scrolled .nav-logo { color: #c00f08; }
+  body.light #nav.nav-scrolled .nav-phone { color: #3a3a3a; }
+  body.light #nav.nav-scrolled .hamburger-line { background: #0d0d0d; }
+
+  body.light #theme-toggle {
+    border-color: rgba(0,0,0,0.18);
+    color: rgba(0,0,0,0.60);
+  }
+  body.light #theme-toggle:hover {
+    border-color: rgba(0,0,0,0.40);
+    color: #0d0d0d;
+  }
+
+  body.light .search-panel { background: rgba(255,255,255,0.97) !important; box-shadow: -8px 0 40px rgba(0,0,0,0.18) !important; }
+  body.light .search-panel h3 { color: #0d0d0d !important; }
+  body.light .search-panel p { color: #7a7a7a !important; }
+
+  body.light .form-select { background: #ede9e8; border-color: #e0dada; color: #0d0d0d; }
+  body.light .form-label { color: #7a7a7a; }
+
+  body.light #nouveautes { background: #f7f5f4 !important; }
+  body.light #nouveautes h2 { color: #0d0d0d !important; }
+
+  body.light .car-card { background: #fff; }
+  body.light .car-card h3 { color: #0d0d0d !important; }
+  body.light .car-card .card-subtitle { color: #7a7a7a !important; }
+  body.light .car-card .card-meta { color: #3a3a3a !important; }
+  body.light .car-card .card-divider { border-top-color: #e0dada !important; }
+
+  body.light #mobile-menu { background: rgba(255,255,255,0.98); border-top-color: #e0dada; }
+  body.light .mobile-link { color: #0d0d0d; border-bottom-color: #f0ecea; }
+  body.light #mobile-menu hr { border-top-color: #e0dada !important; }
+  body.light #mobile-menu a[href^="tel"] { color: #3a3a3a !important; }
+  /* CTA section + Footer */
+  body.light #cta { background: #f7f5f4 !important; }
+  body.light #cta h2 { color: #0d0d0d !important; }
+  body.light #cta p { color: rgba(0,0,0,0.55) !important; }
+  body.light footer { background: #f0eeec !important; border-top-color: rgba(0,0,0,0.08) !important; }
+  body.light footer h4 { color: rgba(0,0,0,0.40) !important; }
+  body.light footer p { color: rgba(0,0,0,0.55) !important; }
+  body.light footer address { color: rgba(0,0,0,0.65) !important; }
+  body.light footer a[href^="tel"], body.light footer a[href^="mailto"] { color: rgba(0,0,0,0.65) !important; }
+  body.light footer [style*="border-top:1px solid rgba(255,255,255"] { border-top-color: rgba(0,0,0,0.08) !important; }
+</style>
+
+<!-- ────────────────────────────────────────────────────────────
+     JAVASCRIPT
+──────────────────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── SLIDER ── */
+  const wrapper    = document.querySelector('.slides-wrapper');
+  const slides     = document.querySelectorAll('.slide');
+  const dots       = document.querySelectorAll('.dot');
+  const dotsD      = document.querySelectorAll('.dot-d');
+  const total      = slides.length;
+  let current      = 0;
+  let timer        = null;
+
+  function goTo(index) {
+    current = ((index % total) + total) % total;
+    wrapper.style.transform = 'translateX(-' + (current * 100) + '%)';
+    dots.forEach(function(d, i) {
+      d.classList.toggle('active', i === current);
+    });
+    dotsD.forEach(function(d, i) {
+      d.classList.toggle('active-d', i === current);
+    });
+  }
+
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  function startTimer() {
+    timer = setInterval(nextSlide, 5000);
+  }
+  function resetTimer() {
+    clearInterval(timer);
+    startTimer();
+  }
+
+  document.getElementById('next').addEventListener('click', function() { nextSlide(); resetTimer(); });
+  document.getElementById('prev').addEventListener('click', function() { prevSlide(); resetTimer(); });
+
+  dots.forEach(function(dot, i) {
+    dot.addEventListener('click', function() { goTo(i); resetTimer(); });
+  });
+  dotsD.forEach(function(dot, i) {
+    dot.addEventListener('click', function() { goTo(i); resetTimer(); });
+  });
+
+  /* Pause on hover */
+  var sliderEl = document.getElementById('slider');
+  sliderEl.addEventListener('mouseenter', function() { clearInterval(timer); });
+  sliderEl.addEventListener('mouseleave', startTimer);
+
+  /* Touch/swipe */
+  var touchStartX = 0;
+  sliderEl.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  sliderEl.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) {
+      if (dx < 0) { nextSlide(); } else { prevSlide(); }
+      resetTimer();
+    }
+  }, { passive: true });
+
+  /* Keyboard nav */
+  sliderEl.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') { prevSlide(); resetTimer(); }
+    if (e.key === 'ArrowRight') { nextSlide(); resetTimer(); }
+  });
+
+  goTo(0);
+  startTimer();
+
+  /* ── THEME TOGGLE ── */
+  var themeBtn  = document.getElementById('theme-toggle');
+  var iconMoon  = document.getElementById('icon-moon');
+  var iconSun   = document.getElementById('icon-sun');
+  var isLight   = localStorage.getItem('theme') === 'light';
+
+  function applyTheme(light) {
+    if (light) {
+      document.body.classList.add('light');
+      iconMoon.style.display = 'none';
+      iconSun.style.display  = '';
+    } else {
+      document.body.classList.remove('light');
+      iconMoon.style.display = '';
+      iconSun.style.display  = 'none';
+    }
+  }
+
+  applyTheme(isLight);
+
+  themeBtn.addEventListener('click', function () {
+    isLight = !isLight;
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    applyTheme(isLight);
+  });
+
+  /* ── NAV SCROLL ── */
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    if (window.scrollY > 80) {
+      nav.classList.add('nav-scrolled');
+    } else {
+      nav.classList.remove('nav-scrolled');
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll(); // run on load
+
+  /* ── MOBILE MENU ── */
+  var menuToggle = document.getElementById('menu-toggle');
+  var mobileMenu = document.getElementById('mobile-menu');
+
+  menuToggle.addEventListener('click', function() {
+    var isOpen = mobileMenu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+})();
+
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('menu-toggle').setAttribute('aria-expanded', 'false');
+}
+</script>
+
+<!-- ── Auth Nav Widget ── -->
+<style>
+  .nav-user-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: #e8e6e4; font-family: 'Inter', sans-serif; font-size: 0.8125rem; font-weight: 600;
+    padding: 7px 14px; border-radius: 8px; cursor: pointer; position: relative;
+    transition: background 150ms ease, border-color 150ms ease;
+    white-space: nowrap;
+  }
+  .nav-user-btn:hover { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.22); }
+  .nav-user-avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg, #c00f08 0%, #5a0603 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 800; color: #fff; flex-shrink: 0;
+  }
+  .nav-dropdown {
+    position: absolute; top: calc(100% + 8px); right: 0; min-width: 180px;
+    background: #1a1a1a; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.40); padding: 6px;
+    display: none; z-index: 200;
+  }
+  .nav-dropdown.open { display: block; }
+  .nav-dropdown a, .nav-dropdown button {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    padding: 9px 12px; border-radius: 8px; font-size: 0.8125rem; font-weight: 500;
+    color: rgba(255,255,255,0.70); text-decoration: none; background: none; border: none; cursor: pointer;
+    transition: background 130ms ease, color 130ms ease; text-align: left;
+    font-family: 'Inter', sans-serif;
+  }
+  .nav-dropdown a:hover, .nav-dropdown button:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  .nav-dropdown .sep { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 4px 0; }
+  .nav-dropdown .danger { color: #ff7b75 !important; }
+  .nav-dropdown .danger:hover { background: rgba(255,95,88,0.08) !important; }
+  .nav-login-btn {
+    display: flex; align-items: center; gap: 6px;
+    background: #c00f08; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.8125rem; font-weight: 600;
+    padding: 8px 16px; border-radius: 8px; text-decoration: none; white-space: nowrap;
+    transition: background 150ms ease, transform 150ms ease;
+    box-shadow: 0 2px 8px rgba(192,15,8,0.35);
+  }
+  .nav-login-btn:hover { background: #8b0905; transform: translateY(-1px); }
+</style>
+<script>
+(function() {
+  var token = localStorage.getItem('azf_token');
+  var navAuthEl    = document.getElementById('nav-auth');
+  var mobileAuthEl = document.getElementById('mobile-auth');
+
+  function initials(name) {
+    return (name||'?').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase();
+  }
+
+  function renderLoggedIn(user) {
+    var isAdmin = user.role === 'admin';
+    var html = '<div style="position:relative;">'
+      + '<button class="nav-user-btn" onclick="toggleAuthDrop()" id="auth-user-btn">'
+      + '<span class="nav-user-avatar">' + initials(user.name) + '</span>'
+      + user.name.split(' ')[0]
+      + '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'
+      + '</button>'
+      + '<div class="nav-dropdown" id="auth-dropdown">'
+      + (isAdmin ? '<a href="admin.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Panneau admin</a>' : '')
+      + '<a href="profile.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Mon profil</a>'
+      + '<a href="profile.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="#c00f08" stroke="#c00f08" stroke-width="0"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Mes favoris</a>'
+      + '<hr class="sep">'
+      + '<button class="danger" onclick="navLogout()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Déconnexion</button>'
+      + '</div></div>';
+    if (navAuthEl) navAuthEl.innerHTML = html;
+    if (mobileAuthEl) mobileAuthEl.innerHTML = '<a href="profile.html" class="mobile-link" style="color:#e8e6e4;">Mon compte</a>'
+      + (isAdmin ? '<a href="admin.html" class="mobile-link" style="color:#c00f08;">Admin</a>' : '');
+  }
+
+  function renderLoggedOut() {
+    if (navAuthEl) navAuthEl.innerHTML = '<a href="login.html" class="nav-login-btn">Connexion</a>';
+    if (mobileAuthEl) mobileAuthEl.innerHTML = '<a href="login.html" class="mobile-link" style="color:#c00f08;">Connexion / Inscription</a>';
+  }
+
+  window.toggleAuthDrop = function() {
+    var d = document.getElementById('auth-dropdown');
+    if (d) d.classList.toggle('open');
+  };
+  document.addEventListener('click', function(e) {
+    var btn = document.getElementById('auth-user-btn');
+    var drop = document.getElementById('auth-dropdown');
+    if (drop && btn && !btn.contains(e.target) && !drop.contains(e.target)) {
+      drop.classList.remove('open');
+    }
+  });
+
+  window.navLogout = function() {
+    fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('azf_token')||'') } });
+    localStorage.removeItem('azf_token');
+    localStorage.removeItem('azf_user');
+    renderLoggedOut();
+  };
+
+  if (!token) { renderLoggedOut(); return; }
+  // Try cached user first for instant render
+  try {
+    var cached = JSON.parse(localStorage.getItem('azf_user') || 'null');
+    if (cached) renderLoggedIn(cached);
+  } catch(e) {}
+  // Verify with server
+  fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.user) { localStorage.setItem('azf_user', JSON.stringify(d.user)); renderLoggedIn(d.user); }
+      else { localStorage.removeItem('azf_token'); localStorage.removeItem('azf_user'); renderLoggedOut(); }
+    })
+    .catch(function() { renderLoggedOut(); });
+})();
+</script>
+
+</body>
+</html>

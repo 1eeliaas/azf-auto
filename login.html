@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr" style="color-scheme:dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AZF AUTO — Connexion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { font-family: 'Inter', sans-serif; }
+    body {
+      margin: 0; background: #0d0d0d; color: #e8e6e4; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      background: radial-gradient(ellipse at 60% 20%, rgba(192,15,8,0.11) 0%, transparent 55%),
+                  radial-gradient(ellipse at 20% 80%, rgba(192,15,8,0.06) 0%, transparent 50%),
+                  #0d0d0d;
+    }
+
+    .card {
+      width: 100%; max-width: 400px;
+      background: #111; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px; padding: 40px 36px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.50), 0 2px 8px rgba(0,0,0,0.20);
+    }
+
+    .logo {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 1.75rem; font-weight: 800;
+      letter-spacing: -0.01em; margin: 0 0 4px; color: #fff; text-decoration: none; display: block;
+    }
+    .logo span { color: #c00f08; }
+    .subtitle { font-size: 0.8125rem; color: rgba(255,255,255,0.35); margin: 0 0 32px; font-weight: 500; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 0; margin-bottom: 28px; background: #0d0d0d; border-radius: 10px; padding: 3px; }
+    .tab {
+      flex: 1; padding: 9px; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+      border: none; border-radius: 8px; cursor: pointer; transition: background 180ms ease, color 180ms ease;
+      background: transparent; color: rgba(255,255,255,0.40); letter-spacing: 0.01em;
+    }
+    .tab.active { background: #1c1c1c; color: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.30); }
+
+    /* Form */
+    .form { display: none; }
+    .form.active { display: block; }
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.35); font-weight: 600; margin-bottom: 7px;
+    }
+    .form-input {
+      width: 100%; background: #1c1c1c; border: 1px solid rgba(255,255,255,0.10);
+      color: #e8e6e4; font-family: 'Inter', sans-serif; font-size: 0.9375rem; font-weight: 400;
+      padding: 12px 14px; border-radius: 10px; transition: border-color 200ms ease; outline: none;
+    }
+    .form-input::placeholder { color: rgba(255,255,255,0.22); }
+    .form-input:focus { border-color: rgba(192,15,8,0.60); }
+    .form-input.error { border-color: rgba(255,95,88,0.70); }
+
+    .btn-submit {
+      width: 100%; background: #c00f08; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 0.9375rem; font-weight: 600;
+      padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+      letter-spacing: 0.01em; margin-top: 8px;
+      transition: background 200ms ease, transform 150ms ease;
+      box-shadow: 0 4px 14px rgba(192,15,8,0.40);
+    }
+    .btn-submit:hover   { background: #8b0905; transform: translateY(-1px); }
+    .btn-submit:active  { background: #5a0603; transform: none; }
+    .btn-submit:disabled { background: #333; color: rgba(255,255,255,0.30); cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .msg-error {
+      background: rgba(255,95,88,0.10); border: 1px solid rgba(255,95,88,0.25);
+      color: #ff7b75; border-radius: 8px; padding: 10px 14px; font-size: 0.8125rem;
+      margin-bottom: 16px; display: none;
+    }
+    .msg-success {
+      background: rgba(34,197,94,0.10); border: 1px solid rgba(34,197,94,0.25);
+      color: #4ade80; border-radius: 8px; padding: 10px 14px; font-size: 0.8125rem;
+      margin-bottom: 16px; display: none;
+    }
+
+    .divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 28px 0; }
+    .back-link {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-size: 0.8125rem; color: rgba(255,255,255,0.30); text-decoration: none;
+      transition: color 150ms ease;
+    }
+    .back-link:hover { color: rgba(255,255,255,0.60); }
+    .back-link svg { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" class="logo">AZF<span> AUTO</span></a>
+    <p class="subtitle">Bienvenue — connectez-vous ou créez votre compte</p>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('login')">Se connecter</button>
+      <button class="tab"        onclick="switchTab('register')">Créer un compte</button>
+    </div>
+
+    <!-- ── LOGIN FORM ── -->
+    <div id="form-login" class="form active">
+      <div id="login-error"   class="msg-error"></div>
+      <div id="login-success" class="msg-success"></div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input id="login-email" class="form-input" type="email" placeholder="votre@email.fr" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input id="login-password" class="form-input" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+      </div>
+
+      <button class="btn-submit" onclick="doLogin()">Se connecter</button>
+    </div>
+
+    <!-- ── REGISTER FORM ── -->
+    <div id="form-register" class="form">
+      <div id="register-error"   class="msg-error"></div>
+      <div id="register-success" class="msg-success"></div>
+
+      <div class="form-group">
+        <label class="form-label">Prénom et nom</label>
+        <input id="reg-name" class="form-input" type="text" placeholder="Jean Dupont" autocomplete="name" onkeydown="if(event.key==='Enter')doRegister()" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input id="reg-email" class="form-input" type="email" placeholder="votre@email.fr" autocomplete="email" onkeydown="if(event.key==='Enter')doRegister()" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input id="reg-password" class="form-input" type="password" placeholder="Minimum 6 caractères" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirmer le mot de passe</label>
+        <input id="reg-confirm" class="form-input" type="password" placeholder="••••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()" />
+      </div>
+
+      <button class="btn-submit" onclick="doRegister()">Créer mon compte</button>
+    </div>
+
+    <hr class="divider" />
+    <a href="index.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Retour au site
+    </a>
+  </div>
+
+  <script>
+    /* ── Redirect if already logged in ── */
+    (function() {
+      var token = localStorage.getItem('azf_token');
+      if (!token) return;
+      fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.user) {
+            window.location.href = d.user.role === 'admin' ? 'admin.html' : getRedirect();
+          }
+        }).catch(function(){});
+    })();
+
+    function getRedirect() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get('redirect') || 'index.html';
+    }
+
+    var currentTab = 'login';
+
+    window.switchTab = function(tab) {
+      currentTab = tab;
+      document.getElementById('form-login').classList.toggle('active', tab === 'login');
+      document.getElementById('form-register').classList.toggle('active', tab === 'register');
+      document.querySelectorAll('.tab').forEach(function(el, i) {
+        el.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+      });
+      clearMessages();
+    };
+
+    function clearMessages() {
+      ['login-error','login-success','register-error','register-success'].forEach(function(id) {
+        var el = document.getElementById(id);
+        el.style.display = 'none'; el.textContent = '';
+      });
+    }
+
+    function showMsg(id, msg) {
+      var el = document.getElementById(id);
+      el.textContent = msg; el.style.display = 'block';
+    }
+
+    window.doLogin = function() {
+      clearMessages();
+      var email    = document.getElementById('login-email').value.trim();
+      var password = document.getElementById('login-password').value;
+      if (!email || !password) { showMsg('login-error', 'Veuillez remplir tous les champs.'); return; }
+
+      var btn = document.querySelector('#form-login .btn-submit');
+      btn.disabled = true; btn.textContent = 'Connexion…';
+
+      fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: password }),
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        btn.disabled = false; btn.textContent = 'Se connecter';
+        if (d.error) { showMsg('login-error', d.error); return; }
+        localStorage.setItem('azf_token', d.token);
+        localStorage.setItem('azf_user', JSON.stringify(d.user));
+        if (d.user.role === 'admin') {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = getRedirect();
+        }
+      })
+      .catch(function() {
+        btn.disabled = false; btn.textContent = 'Se connecter';
+        showMsg('login-error', 'Erreur réseau, réessayez.');
+      });
+    };
+
+    window.doRegister = function() {
+      clearMessages();
+      var name     = document.getElementById('reg-name').value.trim();
+      var email    = document.getElementById('reg-email').value.trim();
+      var password = document.getElementById('reg-password').value;
+      var confirm  = document.getElementById('reg-confirm').value;
+
+      if (!name || !email || !password || !confirm) { showMsg('register-error', 'Veuillez remplir tous les champs.'); return; }
+      if (password.length < 6) { showMsg('register-error', 'Mot de passe trop court (6 caractères minimum).'); return; }
+      if (password !== confirm) { showMsg('register-error', 'Les mots de passe ne correspondent pas.'); return; }
+
+      var btn = document.querySelector('#form-register .btn-submit');
+      btn.disabled = true; btn.textContent = 'Création…';
+
+      fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, password: password }),
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        btn.disabled = false; btn.textContent = 'Créer mon compte';
+        if (d.error) { showMsg('register-error', d.error); return; }
+        localStorage.setItem('azf_token', d.token);
+        localStorage.setItem('azf_user', JSON.stringify(d.user));
+        showMsg('register-success', 'Compte créé ! Redirection…');
+        setTimeout(function() { window.location.href = getRedirect(); }, 1000);
+      })
+      .catch(function() {
+        btn.disabled = false; btn.textContent = 'Créer mon compte';
+        showMsg('register-error', 'Erreur réseau, réessayez.');
+      });
+    };
+  </script>
+</body>
+</html>

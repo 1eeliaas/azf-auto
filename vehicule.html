@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="fr" style="color-scheme:dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">AZF AUTO — Fiche véhicule</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand:         '#c00f08',
+            'brand-dark':  '#8b0905',
+            'brand-deeper':'#5a0603',
+            'brand-glow':  'rgba(192,15,8,0.18)',
+            ink:           '#0d0d0d',
+            'ink-soft':    '#3a3a3a',
+            'ink-muted':   '#7a7a7a',
+            'surface-2':   '#f7f5f4',
+            'surface-3':   '#ede9e8',
+            border:        '#e0dada',
+          },
+          fontFamily: {
+            display: ['"Barlow Condensed"', 'sans-serif'],
+            body:    ['"Inter"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+    body { margin: 0; background: #0d0d0d; color: #e8e6e4; overflow-x: hidden; }
+
+    .shadow-card {
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 8px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+    }
+    .shadow-card:hover {
+      box-shadow: 0 4px 8px rgba(192,15,8,0.10), 0 16px 40px rgba(0,0,0,0.14), 0 0 0 1px rgba(192,15,8,0.10);
+    }
+
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(13,13,13,0.97);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.40);
+    }
+    #nav .nav-link { color: #c8c4c2; }
+    #nav .nav-link:hover { color: #c00f08; }
+    #nav .nav-logo { color: #fff; }
+    #nav .nav-phone { color: #c8c4c2; }
+    #nav .hamburger-line { background: #e8e6e4; }
+
+    .nav-link {
+      font-size: 0.875rem; font-weight: 500; letter-spacing: 0.01em;
+      text-decoration: none; transition: color 200ms ease;
+    }
+    .nav-link:focus-visible { outline: 2px solid rgba(192,15,8,0.5); outline-offset: 4px; border-radius: 2px; }
+
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.5rem;
+      letter-spacing: -0.01em; color: #fff; text-decoration: none; transition: opacity 200ms ease;
+    }
+    .nav-logo:hover { opacity: 0.85; }
+    .nav-logo span { color: #c00f08; }
+
+    .nav-phone {
+      font-size: 0.875rem; font-weight: 500; text-decoration: none;
+      display: flex; align-items: center; gap: 6px; transition: color 200ms ease;
+    }
+    .nav-phone:hover { color: #fff !important; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px; background: #c00f08; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 9px 18px; border-radius: 6px; border: none; cursor: pointer;
+      text-decoration: none; letter-spacing: 0.01em;
+      box-shadow: 0 2px 6px rgba(192,15,8,0.40), 0 1px 2px rgba(0,0,0,0.20);
+      transition: background 200ms ease, transform 150ms ease, box-shadow 200ms ease;
+    }
+    .btn-primary:hover { background: #8b0905; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(192,15,8,0.50), 0 2px 4px rgba(0,0,0,0.25); }
+    .btn-primary:active { background: #5a0603; transform: translateY(0); }
+    .btn-primary:focus-visible { outline: 2px solid rgba(192,15,8,0.6); outline-offset: 3px; }
+
+    .hamburger-line { display: block; width: 22px; height: 2px; border-radius: 2px; transition: transform 250ms ease, opacity 250ms ease; }
+    #menu-toggle[aria-expanded="true"] .line-1 { transform: translateY(7px) rotate(45deg); }
+    #menu-toggle[aria-expanded="true"] .line-2 { opacity: 0; }
+    #menu-toggle[aria-expanded="true"] .line-3 { transform: translateY(-7px) rotate(-45deg); }
+
+    #mobile-menu { display: none; background: rgba(13,13,13,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.08); }
+    #mobile-menu.open { display: block; }
+
+    .mobile-link { display: block; padding: 10px 0; font-size: 1.0625rem; font-weight: 500; color: #c8c4c2; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.08); transition: color 150ms ease; }
+    .mobile-link:hover { color: #c00f08; }
+
+    .car-card { background: #181818; border-radius: 14px; overflow: hidden; transition: transform 300ms ease-out, box-shadow 300ms ease-out; cursor: pointer; }
+    .car-card:hover { transform: translateY(-4px); }
+    .car-card:hover .card-img { transform: scale(1.05); }
+    .car-card:focus-visible { outline: 2px solid #c00f08; outline-offset: 2px; }
+    .card-img { transition: transform 500ms ease-out; }
+
+    .thumb { cursor: pointer; border-radius: 8px; overflow: hidden; border: 2px solid transparent; transition: border-color 200ms ease, opacity 200ms ease; opacity: 0.55; }
+    .thumb:hover { opacity: 0.85; }
+    .thumb.active { border-color: #c00f08; opacity: 1; }
+
+    .spec-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; font-size: 0.875rem; }
+    .spec-row:nth-child(odd)  { background: #181818; }
+    .spec-row:nth-child(even) { background: #1c1c1c; }
+    .spec-label { color: rgba(255,255,255,0.45); font-weight: 500; }
+    .spec-value { color: #e8e6e4; font-weight: 600; text-align: right; }
+
+    .guarantee-item { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; padding: 32px 16px; }
+    .guarantee-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(192,15,8,0.12); border-radius: 12px; }
+
+    /* ── Light mode ── */
+    body.light { background: #fff; color: #0d0d0d; }
+    body.light #nav { background: rgba(255,255,255,0.97); box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.10); }
+    body.light #nav .nav-link { color: #3a3a3a; }
+    body.light #nav .nav-link:hover { color: #c00f08; }
+    body.light #nav .nav-logo { color: #c00f08; }
+    body.light #nav .nav-phone { color: #3a3a3a; }
+    body.light #nav .hamburger-line { background: #0d0d0d; }
+    body.light #theme-toggle { border-color: rgba(0,0,0,0.18); color: rgba(0,0,0,0.60); }
+    body.light #theme-toggle:hover { border-color: rgba(0,0,0,0.40); color: #0d0d0d; }
+    body.light .breadcrumb-wrap { background: #f7f5f4 !important; border-bottom-color: #e0dada !important; }
+    body.light .breadcrumb-wrap a, body.light .breadcrumb-wrap span { color: #7a7a7a !important; }
+    body.light .breadcrumb-wrap .crumb-current { color: #0d0d0d !important; }
+    body.light .detail-section { background: #fff !important; }
+    body.light .spec-row:nth-child(odd)  { background: #f7f5f4; }
+    body.light .spec-row:nth-child(even) { background: #ede9e8; }
+    body.light .spec-label { color: #7a7a7a; }
+    body.light .spec-value { color: #0d0d0d; }
+    body.light .info-card  { background: #f7f5f4 !important; border-color: #e0dada !important; }
+    body.light .info-card h3 { color: #0d0d0d !important; }
+    body.light .info-card p, body.light .info-card li { color: #3a3a3a !important; }
+    body.light .contact-card { background: #f7f5f4 !important; border-color: #e0dada !important; }
+    body.light .section-suggest { background: #f7f5f4 !important; }
+    body.light .section-suggest h2 { color: #0d0d0d !important; }
+    body.light .car-card { background: #fff; }
+    body.light .car-card h3 { color: #0d0d0d !important; }
+    body.light .car-card .card-subtitle { color: #7a7a7a !important; }
+    body.light .car-card .card-meta { color: #3a3a3a !important; }
+    body.light .car-card .card-divider { border-top-color: #e0dada !important; }
+    body.light #mobile-menu { background: rgba(255,255,255,0.98); border-top-color: #e0dada; }
+    body.light .mobile-link { color: #0d0d0d; border-bottom-color: #f0ecea; }
+    body.light .guarantee-strip { background: #f0eeee !important; border-color: rgba(0,0,0,0.06) !important; }
+    body.light .guarantee-icon { background: rgba(192,15,8,0.08) !important; }
+    body.light .gallery-main { background: #ede9e8 !important; }
+    /* Contact+suggest sections + Footer */
+    body.light .section-contact-cards { background: #f7f5f4 !important; }
+    body.light .section-suggest { background: #f7f5f4 !important; }
+    body.light footer { background: #f0eeec !important; border-top-color: rgba(0,0,0,0.08) !important; }
+    body.light footer h4 { color: rgba(0,0,0,0.40) !important; }
+    body.light footer p { color: rgba(0,0,0,0.55) !important; }
+    body.light footer address { color: rgba(0,0,0,0.65) !important; }
+    body.light footer a[href^="tel"], body.light footer a[href^="mailto"] { color: rgba(0,0,0,0.65) !important; }
+    body.light footer [style*="border-top:1px solid rgba(255,255,255"] { border-top-color: rgba(0,0,0,0.08) !important; }
+
+    @media (min-width: 1024px) {
+      #detail-grid { grid-template-columns: 1fr 480px !important; }
+      #info-grid   { grid-template-columns: 1fr 380px !important; }
+    }
+    @media (min-width: 768px) {
+      footer > div > div:first-child { grid-template-columns: repeat(4, 1fr) !important; }
+      footer > div > div:last-child  { flex-direction: row !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<header id="nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+    <a href="index.html" class="nav-logo">AZF<span>&nbsp;AUTO</span></a>
+    <nav style="display:flex;align-items:center;gap:32px;" class="hidden md:flex">
+      <a href="index.html" class="nav-link">Accueil</a>
+      <a href="nos-vehicules.html" class="nav-link">Nos véhicules</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button id="theme-toggle" aria-label="Basculer le thème"
+              style="background:none;border:1.5px solid rgba(255,255,255,0.22);border-radius:8px;cursor:pointer;padding:7px 9px;display:flex;align-items:center;color:rgba(255,255,255,0.80);transition:border-color 200ms ease,color 200ms ease;"
+              onmouseover="this.style.borderColor='rgba(255,255,255,0.55)';this.style.color='#fff'"
+              onmouseout="this.style.borderColor='rgba(255,255,255,0.22)';this.style.color='rgba(255,255,255,0.80)'">
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg id="icon-sun"  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <a href="tel:+33363381844" class="nav-phone hidden md:flex">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        03 63 38 18 44
+      </a>
+      <div id="nav-auth"></div>
+      <button id="menu-toggle" aria-expanded="false" aria-label="Menu" class="md:hidden"
+              style="background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;">
+        <span class="hamburger-line line-1"></span>
+        <span class="hamburger-line line-2"></span>
+        <span class="hamburger-line line-3"></span>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-menu">
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:4px;">
+      <a href="index.html"           class="mobile-link" onclick="closeMobileMenu()">Accueil</a>
+      <a href="nos-vehicules.html"   class="mobile-link" onclick="closeMobileMenu()">Nos véhicules</a>
+      <a href="contact.html"         class="mobile-link" onclick="closeMobileMenu()">Contact</a>
+      <div id="mobile-auth" style="margin-top:4px;"></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0;" />
+      <a href="tel:+33363381844" style="display:flex;align-items:center;gap:8px;color:#c8c4c2;font-size:0.9375rem;font-weight:500;text-decoration:none;padding:8px 0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        03 63 38 18 44
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ─── BREADCRUMB ─── -->
+<div class="breadcrumb-wrap" style="margin-top:64px;background:#111;border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 0;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+    <a href="index.html" style="color:rgba(255,255,255,0.40);font-size:0.8125rem;text-decoration:none;font-weight:500;transition:color 200ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.75)'" onmouseout="this.style.color='rgba(255,255,255,0.40)'">Accueil</a>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <a href="nos-vehicules.html" style="color:rgba(255,255,255,0.40);font-size:0.8125rem;text-decoration:none;font-weight:500;transition:color 200ms ease;" onmouseover="this.style.color='rgba(255,255,255,0.75)'" onmouseout="this.style.color='rgba(255,255,255,0.40)'">Nos véhicules</a>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    <span id="breadcrumb-current" class="crumb-current" style="color:#e8e6e4;font-size:0.8125rem;font-weight:600;">—</span>
+  </div>
+</div>
+
+<!-- ─── DETAIL SECTION ─── -->
+<section class="detail-section" style="padding:48px 0 64px;background:#0d0d0d;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div id="detail-grid" style="display:grid;grid-template-columns:1fr;gap:40px;">
+
+      <!-- Left: Gallery -->
+      <div>
+        <div class="gallery-main" style="position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;background:#181818;">
+          <img id="main-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;transition:opacity 300ms ease;" />
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.40) 0%,transparent 45%);pointer-events:none;"></div>
+          <div style="position:absolute;inset:0;background:rgba(192,15,8,0.08);mix-blend-mode:multiply;pointer-events:none;"></div>
+          <div style="position:absolute;bottom:14px;right:16px;background:rgba(0,0,0,0.60);backdrop-filter:blur(8px);border-radius:99px;padding:4px 12px;">
+            <span id="gallery-counter" style="color:rgba(255,255,255,0.90);font-size:0.75rem;font-weight:600;letter-spacing:0.04em;">1 / 4</span>
+          </div>
+        </div>
+        <div id="thumbs" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;"></div>
+      </div>
+
+      <!-- Right: Info -->
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+            <div>
+              <h1 id="veh-title" style="font-family:'Barlow Condensed',sans-serif;font-size:2.25rem;font-weight:800;letter-spacing:-0.03em;color:#fff;margin:0 0 4px;line-height:1.0;">—</h1>
+              <p id="veh-version" style="font-size:0.9rem;color:rgba(255,255,255,0.45);font-weight:500;margin:0;"></p>
+            </div>
+            <div style="text-align:right;">
+              <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 2px;">Prix</p>
+              <p id="veh-price" style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;color:#c00f08;margin:0;letter-spacing:-0.02em;line-height:1.0;">—</p>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:1px;background:rgba(255,255,255,0.08);margin-bottom:20px;"></div>
+
+        <div id="specs-table" style="border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.07);margin-bottom:24px;"></div>
+
+        <div style="background:#c00f08;border-radius:12px;padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 8px 32px rgba(192,15,8,0.35),0 2px 8px rgba(0,0,0,0.20);">
+          <div>
+            <p style="font-family:'Barlow Condensed',sans-serif;font-size:1.375rem;font-weight:700;color:#fff;margin:0 0 4px;letter-spacing:-0.01em;">Ce véhicule vous intéresse&nbsp;?</p>
+            <p style="font-size:0.8125rem;color:rgba(255,255,255,0.75);margin:0;">Contactez-nous dès maintenant !</p>
+          </div>
+          <a href="tel:+33363381844"
+             style="display:inline-flex;align-items:center;gap:8px;background:#8b0905;color:#fff;font-family:'Inter',sans-serif;font-size:0.9375rem;font-weight:700;padding:13px 24px;border-radius:8px;text-decoration:none;letter-spacing:0.01em;white-space:nowrap;transition:background 200ms ease,transform 150ms ease;"
+             onmouseover="this.style.background='#5a0603';this.style.transform='translateY(-1px)'"
+             onmouseout="this.style.background='#8b0905';this.style.transform='translateY(0)'">
+            Contactez-nous
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── GUARANTEE STRIP ─── -->
+<div class="guarantee-strip" style="background:#111111;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);" class="md:grid-cols-4">
+
+      <div class="guarantee-item" style="border-right:1px solid rgba(255,255,255,0.06);">
+        <div class="guarantee-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c00f08" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><p style="font-family:'Barlow Condensed',sans-serif;font-size:1.0625rem;font-weight:700;color:#fff;margin:0;letter-spacing:-0.01em;">GARANTIE</p><p style="font-size:0.8rem;color:rgba(255,255,255,0.45);margin:4px 0 0;">Jusqu'à 12 mois</p></div>
+      </div>
+
+      <div class="guarantee-item" style="border-right:1px solid rgba(255,255,255,0.06);">
+        <div class="guarantee-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c00f08" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div><p style="font-family:'Barlow Condensed',sans-serif;font-size:1.0625rem;font-weight:700;color:#fff;margin:0;letter-spacing:-0.01em;">LIVRAISON</p><p style="font-size:0.8rem;color:rgba(255,255,255,0.45);margin:4px 0 0;">Partout en France</p></div>
+      </div>
+
+      <div class="guarantee-item" style="border-right:1px solid rgba(255,255,255,0.06);">
+        <div class="guarantee-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c00f08" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <div><p style="font-family:'Barlow Condensed',sans-serif;font-size:1.0625rem;font-weight:700;color:#fff;margin:0;letter-spacing:-0.01em;">REPRISE</p><p style="font-size:0.8rem;color:rgba(255,255,255,0.45);margin:4px 0 0;">Au meilleur prix</p></div>
+      </div>
+
+      <div class="guarantee-item">
+        <div class="guarantee-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c00f08" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+        <div><p style="font-family:'Barlow Condensed',sans-serif;font-size:1.0625rem;font-weight:700;color:#fff;margin:0;letter-spacing:-0.01em;">CERTIFICATION</p><p style="font-size:0.8rem;color:rgba(255,255,255,0.45);margin:4px 0 0;">125 points de contrôle</p></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── INFORMATIONS + COORDONNÉES ─── -->
+<section class="section-contact-cards" style="padding:64px 0;background:#0d0d0d;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div id="info-grid" style="display:grid;grid-template-columns:1fr;gap:32px;">
+
+      <div class="info-card" style="background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:32px 36px;">
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:700;color:#fff;margin:0 0 24px;letter-spacing:-0.02em;">Informations</h3>
+        <div style="margin-bottom:24px;">
+          <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 12px;">Options :</p>
+          <ul id="options-list" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:0.875rem;color:rgba(255,255,255,0.70);line-height:1.6;"></ul>
+        </div>
+        <div>
+          <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 12px;">Informations complémentaires :</p>
+          <p id="veh-description" style="font-size:0.875rem;color:rgba(255,255,255,0.65);line-height:1.75;margin:0;"></p>
+        </div>
+      </div>
+
+      <div class="contact-card" style="background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:32px;display:flex;flex-direction:column;gap:20px;">
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:700;color:#fff;margin:0;letter-spacing:-0.02em;">Coordonnées</h3>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.30);font-weight:600;margin:0 0 6px;">Concessionnaire</p>
+            <p style="font-size:0.9375rem;font-weight:600;color:#fff;margin:0;">AZF AUTO</p>
+          </div>
+          <div>
+            <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.30);font-weight:600;margin:0 0 6px;">Adresse</p>
+            <address style="font-style:normal;font-size:0.875rem;color:rgba(255,255,255,0.65);line-height:1.7;margin:0;">
+              12 Rue de l'Industrie<br/>63000 Clermont-Ferrand<br/>France
+            </address>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <a href="tel:+33363381844" style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.70);font-size:0.875rem;text-decoration:none;font-weight:500;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.70)'">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              03 63 38 18 44
+            </a>
+            <a href="mailto:contact@azf-auto-occasion.com" style="display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.70);font-size:0.875rem;text-decoration:none;font-weight:500;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.70)'">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              contact@azf-auto-occasion.com
+            </a>
+          </div>
+        </div>
+        <button id="fav-btn" onclick="toggleFav()"
+           style="display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:rgba(255,255,255,0.55);font-family:'Inter',sans-serif;font-size:0.875rem;font-weight:600;padding:12px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);cursor:pointer;width:100%;transition:all 180ms ease;letter-spacing:0.01em;">
+          <svg id="fav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span id="fav-label">Ajouter aux favoris</span>
+        </button>
+        <a href="tel:+33363381844"
+           style="display:flex;align-items:center;justify-content:center;gap:8px;background:#c00f08;color:#fff;font-family:'Inter',sans-serif;font-size:0.9375rem;font-weight:600;padding:14px 20px;border-radius:8px;text-decoration:none;letter-spacing:0.01em;margin-top:auto;box-shadow:0 2px 6px rgba(192,15,8,0.40);transition:background 200ms ease,transform 150ms ease,box-shadow 200ms ease;"
+           onmouseover="this.style.background='#8b0905';this.style.transform='translateY(-1px)'"
+           onmouseout="this.style.background='#c00f08';this.style.transform='translateY(0)'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          CONTACTEZ-NOUS
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── VOUS AIMEREZ AUSSI ─── -->
+<section class="section-suggest" style="padding:64px 0 80px;background:#111111;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div style="margin-bottom:36px;">
+      <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.14em;color:#c00f08;font-weight:700;margin:0 0 10px;">Découvrez aussi</p>
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:800;color:#fff;letter-spacing:-0.025em;margin:0;line-height:1.05;">Vous aimerez aussi</h2>
+    </div>
+    <div id="suggest-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;"></div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer style="background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.07);padding:60px 0 0;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div style="display:grid;grid-template-columns:1fr;gap:40px;" class="md:grid-cols-4">
+      <div>
+        <a href="index.html" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.75rem;color:#fff;text-decoration:none;letter-spacing:-0.01em;display:block;margin-bottom:12px;">AZF<span style="color:#c00f08;"> AUTO</span></a>
+        <p style="font-size:0.8125rem;color:rgba(255,255,255,0.40);line-height:1.7;margin:0;">Votre spécialiste en véhicules d'occasion de qualité. Sélection rigoureuse, prix transparents.</p>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Contact</h4>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="tel:+33363381844" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            03 63 38 18 44
+          </a>
+          <a href="mailto:contact@azf-auto-occasion.com" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            contact@azf-auto-occasion.com
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Adresse</h4>
+        <address style="font-style:normal;color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.8;">12 Rue de l'Industrie<br/>63000 Clermont-Ferrand<br/>France</address>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Horaires</h4>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.875rem;color:rgba(255,255,255,0.65);">
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Lun – Ven</span><span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 18h30</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Samedi</span><span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 17h</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Dimanche</span><span style="color:rgba(255,255,255,0.40);">Fermé</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:48px;padding:20px 0;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px;text-align:center;" class="md:flex-row">
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.25);margin:0;">© 2026 AZF AUTO. Tous droits réservés.</p>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.20);margin:0;">Véhicules d'occasion · Financement · Reprise</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── JAVASCRIPT ─── -->
+<script>
+(function () {
+  'use strict';
+
+  var VEHICLES = {
+    clio: {
+      marque:'Renault', modele:'Clio V', version:'Intens · 2021',
+      prix:'12 900 €', km:'45 000 km', carburant:'Essence',
+      transmission:'Manuelle', couleur:'Blanc nacré', portes:'5 portes',
+      annee:'2021', co2:'118 g/km', motorisation:'1.0 TCe 100 cv', ref:'AZF-CV2021-001',
+      imgs:[
+        'images/vehicules/clio-front.png',
+        'images/vehicules/clio-interieur.jpg',
+        'images/vehicules/clio-arriere.jpg'
+      ],
+      options:['Climatisation automatique','Navigation GPS intégrée','Caméra de recul','Sièges chauffants','Régulateur de vitesse adaptatif','Jantes alliage 17"'],
+      description:'Véhicule suivi et entretenu (factures disponibles). REPRISE POSSIBLE. Vendu révisé, tous les éléments d\'usure systématiquement changés si nécessaire. Garantie 3 mois MBPT, extension possible 6 ou 12 mois. Premier propriétaire, non fumeur. Carnet d\'entretien complet.'
+    },
+    peugeot: {
+      marque:'Peugeot', modele:'3008', version:'GT Line · 2020',
+      prix:'24 500 €', km:'38 000 km', carburant:'Diesel',
+      transmission:'Automatique EAT8', couleur:'Gris platinium', portes:'5 portes',
+      annee:'2020', co2:'132 g/km', motorisation:'1.5 BlueHDi 130 cv', ref:'AZF-P3G2020-002',
+      imgs:[
+        'images/vehicules/peugeot-front.jpg',
+        'images/vehicules/peugeot-interieur.webp',
+        'images/vehicules/peugeot-arriere.webp'
+      ],
+      options:['Toit panoramique','i-Cockpit 3D avec affichage tête haute','Pack Safety Plus (angle mort, maintien voie)','Grip Control tout-terrain','Hayon électrique mains libres','Jantes alliage 19" Abyss'],
+      description:'Magnifique Peugeot 3008 GT Line, parfait état. Carnet d\'entretien Peugeot à jour. Véhicule sorti de flotte entreprise, très bien entretenu. Toutes révisions en concession officielle. Pneus récents. Garantie constructeur encore valable.'
+    },
+    golf: {
+      marque:'Volkswagen', modele:'Golf 8', version:'Life · 2022',
+      prix:'19 900 €', km:'22 000 km', carburant:'Essence',
+      transmission:'Manuelle 6v', couleur:'Blanc pur', portes:'5 portes',
+      annee:'2022', co2:'110 g/km', motorisation:'1.5 TSI 130 cv', ref:'AZF-VG82022-003',
+      imgs:[
+        'images/vehicules/golf-front.jpg',
+        'images/vehicules/golf-interieur.webp',
+        'images/vehicules/golf-arriere.jpg'
+      ],
+      options:['Écran tactile 10" avec Apple CarPlay / Android Auto','Aide au stationnement avant et arrière','Phares LED IQ.LIGHT matriciels','App-Connect sans fil','Volant multifonction chauffant','Détecteur de fatigue'],
+      description:'Golf 8 Life quasi neuve, première main. Kilométrage exceptionnel pour l\'année. Toutes options Life incluses. Aucun accident, carrosserie impeccable. Dernière révision effectuée. Vendue avec 2 jeux de clés, carnet et tous documents d\'origine.'
+    },
+    duster: {
+      marque:'Dacia', modele:'Duster', version:'Prestige · 2021',
+      prix:'17 400 €', km:'51 000 km', carburant:'Diesel',
+      transmission:'Manuelle 6v', couleur:'Gris Urban', portes:'5 portes',
+      annee:'2021', co2:'128 g/km', motorisation:'1.5 Blue dCi 115 cv 4x4', ref:'AZF-DD2021-004',
+      imgs:[
+        'images/vehicules/duster-front.jpg',
+        'images/vehicules/dust-interieur.jpg',
+        'images/vehicules/dust-arriere.jpg'
+      ],
+      options:['Transmission intégrale 4x4','Multiview Camera 360°','Navigation GPS MediaNav','Vitres électriques 4','Climatisation automatique bizone','Jantes alliage 17" Terracotta'],
+      description:'Dacia Duster Prestige 4x4, idéal pour tous terrains. Entretien régulier chez Dacia. Courroie de distribution refaite à 45 000 km. Véhicule non fumeur, jamais accidenté. Excellent rapport qualité/prix. Reprise possible.'
+    }
+  };
+
+  var CARD_IMGS = {
+    clio:    'images/vehicules/clio-front.png',
+    peugeot: 'images/vehicules/peugeot-front.jpg',
+    golf:    'images/vehicules/golf-front.jpg',
+    duster:  'images/vehicules/duster-front.jpg'
+  };
+
+  /* ── URL param ── */
+  var params = new URLSearchParams(window.location.search);
+  var id     = params.get('id');
+  if (!VEHICLES[id]) { window.location.href = 'index.html'; return; }
+
+  var v = VEHICLES[id];
+
+  /* ── Populate ── */
+  document.getElementById('page-title').textContent         = 'AZF AUTO — ' + v.marque + ' ' + v.modele;
+  document.getElementById('breadcrumb-current').textContent = v.marque + ' ' + v.modele;
+  document.getElementById('veh-title').textContent          = v.marque + ' ' + v.modele;
+  document.getElementById('veh-version').textContent        = v.version;
+  document.getElementById('veh-price').textContent          = v.prix;
+  document.getElementById('veh-description').textContent    = v.description;
+
+  /* Gallery */
+  var mainImg = document.getElementById('main-img');
+  mainImg.src = v.imgs[0];
+  mainImg.alt = v.marque + ' ' + v.modele;
+
+  var thumbsEl = document.getElementById('thumbs');
+  v.imgs.forEach(function(src, i) {
+    var div = document.createElement('div');
+    div.className = 'thumb' + (i === 0 ? ' active' : '');
+    div.style.cssText = 'aspect-ratio:4/3;background:#181818;';
+    div.tabIndex = 0;
+    div.setAttribute('aria-label', 'Photo ' + (i + 1));
+    var img = document.createElement('img');
+    img.src = src; img.alt = v.marque + ' ' + v.modele + ' photo ' + (i + 1);
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+    div.appendChild(img);
+    div.addEventListener('click', function() { setImg(i); });
+    div.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setImg(i); } });
+    thumbsEl.appendChild(div);
+  });
+
+  function setImg(idx) {
+    mainImg.style.opacity = '0';
+    setTimeout(function() { mainImg.src = v.imgs[idx]; mainImg.style.opacity = '1'; }, 150);
+    document.getElementById('gallery-counter').textContent = (idx + 1) + ' / ' + v.imgs.length;
+    document.querySelectorAll('.thumb').forEach(function(t, i) { t.classList.toggle('active', i === idx); });
+  }
+
+  /* Specs table */
+  var specs = [
+    ['Modèle', v.marque + ' ' + v.modele],
+    ['Version', v.version],
+    ['Motorisation', v.motorisation],
+    ['Couleur', v.couleur],
+    ['Année', v.annee],
+    ['Carburant', v.carburant],
+    ['Transmission', v.transmission],
+    ['Portes', v.portes],
+    ['Kilométrage', v.km],
+    ['Émission CO2', v.co2],
+    ['Référence', v.ref],
+  ];
+  var table = document.getElementById('specs-table');
+  specs.forEach(function(row) {
+    var div = document.createElement('div');
+    div.className = 'spec-row';
+    div.innerHTML = '<span class="spec-label">' + row[0] + '</span><span class="spec-value">' + row[1] + '</span>';
+    table.appendChild(div);
+  });
+
+  /* Options */
+  var ul = document.getElementById('options-list');
+  v.options.forEach(function(opt) {
+    var li = document.createElement('li'); li.textContent = opt; ul.appendChild(li);
+  });
+
+  /* Suggestions */
+  var suggestGrid = document.getElementById('suggest-grid');
+  Object.keys(VEHICLES).forEach(function(key) {
+    if (key === id) return;
+    var sv = VEHICLES[key];
+    var art = document.createElement('article');
+    art.className = 'car-card shadow-card';
+    art.tabIndex = 0;
+    art.onclick = function() { window.location.href = 'vehicule.html?id=' + key; };
+    art.innerHTML =
+      '<div style="position:relative;aspect-ratio:4/3;overflow:hidden;">'
+      + '<img src="' + CARD_IMGS[key] + '" alt="' + sv.marque + ' ' + sv.modele + '" style="width:100%;height:100%;object-fit:cover;" class="card-img" />'
+      + '<div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.65) 0%,transparent 55%);pointer-events:none;"></div>'
+      + '<div style="position:absolute;inset:0;background:rgba(192,15,8,0.10);mix-blend-mode:multiply;pointer-events:none;"></div>'
+      + '<span style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);color:#0d0d0d;font-size:0.7rem;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid rgba(0,0,0,0.08);">' + sv.carburant + '</span>'
+      + '<div style="position:absolute;bottom:12px;left:14px;"><p style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.625rem;font-weight:800;color:#fff;margin:0;letter-spacing:-0.01em;">' + sv.prix + '</p></div>'
+      + '</div>'
+      + '<div style="padding:16px 18px 20px;">'
+      + '<h3 style="font-family:\'Barlow Condensed\',sans-serif;font-size:1.25rem;font-weight:700;color:#e8e6e4;letter-spacing:-0.01em;margin:0 0 2px;">' + sv.marque + ' ' + sv.modele + '</h3>'
+      + '<p style="font-size:0.8125rem;color:#666;margin:0 0 14px;" class="card-subtitle">' + sv.version + '</p>'
+      + '<div class="card-meta" style="display:flex;gap:16px;font-size:0.8rem;color:#aaa;font-weight:500;">'
+      + '<span style="display:flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' + sv.km + '</span>'
+      + '<span style="display:flex;align-items:center;gap:5px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22V8l9-6 9 6v14"/><path d="M9 22V12h6v10"/></svg>' + sv.carburant + '</span>'
+      + '</div>'
+      + '<div class="card-divider" style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08);">'
+      + '<a href="vehicule.html?id=' + key + '" style="color:#c00f08;font-size:0.875rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color 200ms ease;" onmouseover="this.style.color=\'#8b0905\'" onmouseout="this.style.color=\'#c00f08\'">Voir la fiche <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>'
+      + '</div></div>';
+    suggestGrid.appendChild(art);
+  });
+
+  /* ── Favorites & History ── */
+  var authToken = localStorage.getItem('azf_token');
+  var isFav = false;
+
+  function authH() { return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken }; }
+
+  function setFavState(faved) {
+    isFav = faved;
+    var icon  = document.getElementById('fav-icon');
+    var label = document.getElementById('fav-label');
+    var btn   = document.getElementById('fav-btn');
+    if (!icon || !label || !btn) return;
+    if (faved) {
+      icon.setAttribute('fill', '#c00f08'); icon.setAttribute('stroke', '#c00f08');
+      label.textContent = 'Retirer des favoris';
+      btn.style.color = '#c00f08'; btn.style.borderColor = 'rgba(192,15,8,0.40)';
+      btn.style.background = 'rgba(192,15,8,0.08)';
+    } else {
+      icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor');
+      label.textContent = 'Ajouter aux favoris';
+      btn.style.color = 'rgba(255,255,255,0.55)'; btn.style.borderColor = 'rgba(255,255,255,0.15)';
+      btn.style.background = 'transparent';
+    }
+  }
+
+  window.toggleFav = function() {
+    if (!authToken) { window.location.href = 'login.html?redirect=vehicule.html%3Fid%3D' + encodeURIComponent(id); return; }
+    fetch('/api/users/favorites', { method: 'POST', headers: authH(), body: JSON.stringify({ carId: id }) })
+      .then(function(r) { return r.json(); })
+      .then(function(d) { if (d.hasOwnProperty('added')) setFavState(d.added); })
+      .catch(function() {});
+  };
+
+  if (authToken) {
+    /* Track history */
+    fetch('/api/users/history', { method: 'POST', headers: authH(), body: JSON.stringify({ carId: id }) }).catch(function(){});
+    /* Check if already faved */
+    fetch('/api/users/favorites', { headers: { 'Authorization': 'Bearer ' + authToken } })
+      .then(function(r) { return r.json(); })
+      .then(function(cars) { if (Array.isArray(cars) && cars.some(function(c) { return c.id === id; })) setFavState(true); })
+      .catch(function(){});
+  }
+
+  /* ── Theme toggle ── */
+  var themeBtn = document.getElementById('theme-toggle');
+  var iconMoon = document.getElementById('icon-moon');
+  var iconSun  = document.getElementById('icon-sun');
+  var isLight  = localStorage.getItem('theme') === 'light';
+
+  function applyTheme(light) {
+    if (light) { document.body.classList.add('light'); iconMoon.style.display = 'none'; iconSun.style.display = ''; }
+    else { document.body.classList.remove('light'); iconMoon.style.display = ''; iconSun.style.display = 'none'; }
+  }
+  applyTheme(isLight);
+  themeBtn.addEventListener('click', function() { isLight = !isLight; localStorage.setItem('theme', isLight ? 'light' : 'dark'); applyTheme(isLight); });
+
+  /* ── Mobile menu ── */
+  var menuToggle = document.getElementById('menu-toggle');
+  var mobileMenu = document.getElementById('mobile-menu');
+  menuToggle.addEventListener('click', function() {
+    var isOpen = mobileMenu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+})();
+
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('menu-toggle').setAttribute('aria-expanded', 'false');
+}
+</script>
+
+<!-- ── Auth Nav Widget ── -->
+<style>
+  .nav-user-btn { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e8e6e4;font-family:'Inter',sans-serif;font-size:0.8125rem;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;position:relative;transition:background 150ms ease,border-color 150ms ease;white-space:nowrap; }
+  .nav-user-btn:hover { background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.22); }
+  .nav-user-avatar { width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#c00f08 0%,#5a0603 100%);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:800;color:#fff;flex-shrink:0; }
+  .nav-dropdown { position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.12);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.40);padding:6px;display:none;z-index:200; }
+  .nav-dropdown.open { display:block; }
+  .nav-dropdown a, .nav-dropdown button { display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;font-size:0.8125rem;font-weight:500;color:rgba(255,255,255,0.70);text-decoration:none;background:none;border:none;cursor:pointer;transition:background 130ms ease,color 130ms ease;text-align:left;font-family:'Inter',sans-serif; }
+  .nav-dropdown a:hover, .nav-dropdown button:hover { background:rgba(255,255,255,0.07);color:#fff; }
+  .nav-dropdown .sep { border:none;border-top:1px solid rgba(255,255,255,0.08);margin:4px 0; }
+  .nav-dropdown .danger { color:#ff7b75 !important; }
+  .nav-dropdown .danger:hover { background:rgba(255,95,88,0.08) !important; }
+  .nav-login-btn { display:flex;align-items:center;gap:6px;background:#c00f08;color:#fff;font-family:'Inter',sans-serif;font-size:0.8125rem;font-weight:600;padding:8px 16px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:background 150ms ease,transform 150ms ease;box-shadow:0 2px 8px rgba(192,15,8,0.35); }
+  .nav-login-btn:hover { background:#8b0905;transform:translateY(-1px); }
+</style>
+<script>
+(function() {
+  var token = localStorage.getItem('azf_token');
+  var navAuthEl    = document.getElementById('nav-auth');
+  var mobileAuthEl = document.getElementById('mobile-auth');
+  function initials(n) { return (n||'?').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase(); }
+  function renderLoggedIn(user) {
+    var isAdmin = user.role === 'admin';
+    var html = '<div style="position:relative;">'
+      + '<button class="nav-user-btn" onclick="toggleAuthDrop()" id="auth-user-btn"><span class="nav-user-avatar">' + initials(user.name) + '</span>' + user.name.split(' ')[0]
+      + '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>'
+      + '<div class="nav-dropdown" id="auth-dropdown">'
+      + (isAdmin ? '<a href="admin.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Panneau admin</a>' : '')
+      + '<a href="profile.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Mon profil</a>'
+      + '<a href="profile.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="#c00f08" stroke="#c00f08" stroke-width="0"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Mes favoris</a>'
+      + '<hr class="sep"><button class="danger" onclick="navLogout()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Déconnexion</button>'
+      + '</div></div>';
+    if (navAuthEl) navAuthEl.innerHTML = html;
+    if (mobileAuthEl) mobileAuthEl.innerHTML = '<a href="profile.html" class="mobile-link">Mon compte</a>' + (isAdmin ? '<a href="admin.html" class="mobile-link" style="color:#c00f08;">Admin</a>' : '');
+  }
+  function renderLoggedOut() {
+    if (navAuthEl) navAuthEl.innerHTML = '<a href="login.html" class="nav-login-btn">Connexion</a>';
+    if (mobileAuthEl) mobileAuthEl.innerHTML = '<a href="login.html" class="mobile-link" style="color:#c00f08;">Connexion / Inscription</a>';
+  }
+  window.toggleAuthDrop = function() { var d = document.getElementById('auth-dropdown'); if (d) d.classList.toggle('open'); };
+  document.addEventListener('click', function(e) {
+    var btn = document.getElementById('auth-user-btn'); var drop = document.getElementById('auth-dropdown');
+    if (drop && btn && !btn.contains(e.target) && !drop.contains(e.target)) drop.classList.remove('open');
+  });
+  window.navLogout = function() {
+    fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('azf_token')||'') } });
+    localStorage.removeItem('azf_token'); localStorage.removeItem('azf_user'); renderLoggedOut();
+  };
+  if (!token) { renderLoggedOut(); return; }
+  try { var cached = JSON.parse(localStorage.getItem('azf_user') || 'null'); if (cached) renderLoggedIn(cached); } catch(e) {}
+  fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.user) { localStorage.setItem('azf_user', JSON.stringify(d.user)); renderLoggedIn(d.user); }
+      else { localStorage.removeItem('azf_token'); localStorage.removeItem('azf_user'); renderLoggedOut(); }
+    }).catch(function() { renderLoggedOut(); });
+})();
+</script>
+
+</body>
+</html>

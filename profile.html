@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr" style="color-scheme:dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AZF AUTO — Mon profil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { font-family: 'Inter', sans-serif; }
+    body { margin: 0; background: #0d0d0d; color: #e8e6e4; min-height: 100vh; }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(13,13,13,0.97); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 1.25rem; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -0.01em; }
+    .nav-logo span { color: #c00f08; }
+
+    .main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* Profile header */
+    .profile-header {
+      display: flex; align-items: center; gap: 20px; margin-bottom: 48px;
+      padding-bottom: 28px; border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .avatar {
+      width: 60px; height: 60px; border-radius: 50%;
+      background: linear-gradient(135deg, #c00f08 0%, #5a0603 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .profile-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 800; color: #fff; margin: 0 0 4px; letter-spacing: -0.02em; }
+    .profile-email { font-size: 0.8125rem; color: rgba(255,255,255,0.35); margin: 0; }
+
+    .btn-logout {
+      margin-left: auto; flex-shrink: 0;
+      background: transparent; color: rgba(255,255,255,0.40); border: 1px solid rgba(255,255,255,0.12);
+      font-family: 'Inter', sans-serif; font-size: 0.8125rem; font-weight: 600;
+      padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+    }
+    .btn-logout:hover { background: rgba(255,95,88,0.08); color: #ff7b75; border-color: rgba(255,95,88,0.30); }
+
+    /* Section */
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif; font-size: 1.375rem; font-weight: 800;
+      color: #fff; letter-spacing: -0.02em; margin: 0 0 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .section-title .count {
+      font-size: 0.8125rem; font-family: 'Inter', sans-serif; font-weight: 600;
+      color: rgba(255,255,255,0.30); letter-spacing: 0;
+    }
+
+    .section { margin-bottom: 52px; }
+
+    /* Empty state */
+    .empty {
+      background: #111; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px;
+      padding: 40px; text-align: center; color: rgba(255,255,255,0.25); font-size: 0.875rem;
+    }
+    .empty a { color: #c00f08; text-decoration: none; }
+    .empty a:hover { text-decoration: underline; }
+
+    /* Car grid */
+    .car-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+
+    .car-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; overflow: hidden;
+      transition: border-color 200ms ease, transform 200ms ease;
+      display: flex; flex-direction: column;
+    }
+    .car-card:hover { border-color: rgba(192,15,8,0.40); transform: translateY(-2px); }
+
+    .car-img-wrap { position: relative; width: 100%; height: 160px; background: #1c1c1c; flex-shrink: 0; }
+    .car-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .car-img-wrap .no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.12); }
+
+    .fav-btn {
+      position: absolute; top: 10px; right: 10px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: background 150ms ease, border-color 150ms ease;
+    }
+    .fav-btn:hover { background: rgba(192,15,8,0.60); border-color: rgba(192,15,8,0.80); }
+    .fav-btn svg { pointer-events: none; }
+
+    .car-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .car-brand { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 800; color: #fff; letter-spacing: -0.01em; }
+    .car-version { font-size: 0.75rem; color: rgba(255,255,255,0.35); }
+    .car-price { font-family: 'Barlow Condensed', sans-serif; font-size: 1.25rem; font-weight: 700; color: #c00f08; margin-top: auto; padding-top: 8px; }
+    .car-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+    .car-meta span { font-size: 0.75rem; color: rgba(255,255,255,0.30); }
+
+    .car-link { display: block; text-decoration: none; flex: 1; }
+
+    /* History list */
+    .hist-list { display: flex; flex-direction: column; gap: 10px; }
+    .hist-item {
+      display: flex; align-items: center; gap: 14px;
+      background: #111; border: 1px solid rgba(255,255,255,0.07); border-radius: 12px;
+      padding: 12px 16px; text-decoration: none;
+      transition: border-color 180ms ease;
+    }
+    .hist-item:hover { border-color: rgba(255,255,255,0.15); }
+    .hist-thumb { width: 56px; height: 42px; border-radius: 8px; object-fit: cover; background: #1c1c1c; flex-shrink: 0; }
+    .hist-info { flex: 1; min-width: 0; }
+    .hist-name { font-size: 0.9375rem; font-weight: 600; color: #e8e6e4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hist-sub { font-size: 0.75rem; color: rgba(255,255,255,0.30); margin-top: 2px; }
+    .hist-price { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; color: #c00f08; flex-shrink: 0; }
+
+    /* loading spinner */
+    .spinner { text-align: center; padding: 40px; color: rgba(255,255,255,0.25); font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">AZF<span> AUTO</span></a>
+  <a href="nos-vehicules.html" style="font-size:0.875rem;color:rgba(255,255,255,0.45);text-decoration:none;font-weight:500;transition:color 150ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.45)'">Nos véhicules</a>
+</nav>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Profile header -->
+  <div class="profile-header">
+    <div class="avatar" id="avatar-initials">?</div>
+    <div>
+      <p class="profile-name" id="profile-name">Chargement…</p>
+      <p class="profile-email" id="profile-email"></p>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Déconnexion
+    </button>
+  </div>
+
+  <!-- Favoris -->
+  <section class="section">
+    <h2 class="section-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#c00f08" stroke="#c00f08" stroke-width="0"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Mes favoris
+      <span class="count" id="favs-count"></span>
+    </h2>
+    <div id="favs-container"><div class="spinner">Chargement…</div></div>
+  </section>
+
+  <!-- Historique -->
+  <section class="section">
+    <h2 class="section-title">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.50)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Historique de consultation
+      <span class="count" id="hist-count"></span>
+    </h2>
+    <div id="hist-container"><div class="spinner">Chargement…</div></div>
+  </section>
+
+</main>
+
+<script>
+(function() {
+  var token = localStorage.getItem('azf_token');
+  if (!token) { window.location.href = 'login.html?redirect=profile.html'; return; }
+
+  function authH() { return { 'Authorization': 'Bearer ' + token }; }
+  function fmtPrix(n) { return n ? n.toLocaleString('fr-FR') + ' €' : '—'; }
+  function fmtKm(n)   { return n ? n.toLocaleString('fr-FR') + ' km' : '—'; }
+  function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+  function initials(name) {
+    return (name || '?').split(' ').slice(0,2).map(function(w){ return w[0]; }).join('').toUpperCase();
+  }
+
+  window.doLogout = function() {
+    fetch('/api/auth/logout', { method: 'POST', headers: authH() });
+    localStorage.removeItem('azf_token');
+    localStorage.removeItem('azf_user');
+    window.location.href = 'index.html';
+  };
+
+  /* ── Load user ── */
+  fetch('/api/auth/me', { headers: authH() })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (!d.user) { window.location.href = 'login.html?redirect=profile.html'; return; }
+      var u = d.user;
+      document.getElementById('avatar-initials').textContent = initials(u.name);
+      document.getElementById('profile-name').textContent  = u.name;
+      document.getElementById('profile-email').textContent = u.email;
+      if (u.role === 'admin') {
+        // Show admin link
+        var nav = document.querySelector('.nav');
+        var adminLink = document.createElement('a');
+        adminLink.href = 'admin.html';
+        adminLink.textContent = 'Admin';
+        adminLink.style.cssText = 'font-size:0.8125rem;color:#c00f08;text-decoration:none;font-weight:600;margin-left:12px;';
+        nav.appendChild(adminLink);
+      }
+    })
+    .catch(function() { window.location.href = 'login.html?redirect=profile.html'; });
+
+  /* ── Load favorites ── */
+  fetch('/api/users/favorites', { headers: authH() })
+    .then(function(r) { return r.json(); })
+    .then(function(cars) {
+      var el = document.getElementById('favs-container');
+      document.getElementById('favs-count').textContent = '(' + cars.length + ')';
+      if (!cars.length) {
+        el.innerHTML = '<div class="empty">Vous n\'avez pas encore de favoris. <a href="nos-vehicules.html">Parcourir le stock →</a></div>';
+        return;
+      }
+      el.innerHTML = '<div class="car-grid">' + cars.map(function(c) {
+        var img = (c.imgs && c.imgs[0]) ? '<img src="' + esc(c.imgs[0]) + '" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'<div class=no-img><svg width=32 height=32 viewBox=\\\"0 0 24 24\\\" fill=\\\"none\\\" stroke=\\\"currentColor\\\" stroke-width=\\\"1\\\"><rect x=\\\"3\\\" y=\\\"3\\\" width=\\\"18\\\" height=\\\"18\\\" rx=\\\"2\\\"/><circle cx=\\\"8.5\\\" cy=\\\"8.5\\\" r=\\\"1.5\\\"/><polyline points=\\\"21 15 16 10 5 21\\\"/></svg></div>\'">' : '<div class="no-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>';
+        return '<div class="car-card">'
+          + '<div class="car-img-wrap">' + img
+          + '<button class="fav-btn" onclick="removeFav(\'' + esc(c.id) + '\', this)" title="Retirer des favoris"><svg width="14" height="14" viewBox="0 0 24 24" fill="#c00f08" stroke="#c00f08" stroke-width="0"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>'
+          + '</div>'
+          + '<a href="vehicule.html?id=' + esc(c.id) + '" class="car-link"><div class="car-body">'
+          + '<p class="car-brand">' + esc(c.marque) + ' <span style="font-weight:600;">' + esc(c.modele) + '</span></p>'
+          + '<p class="car-version">' + esc(c.version || '') + '</p>'
+          + '<div class="car-meta"><span>' + esc(c.annee || '') + '</span><span>' + fmtKm(c.km) + '</span><span>' + esc(c.carburant || '') + '</span></div>'
+          + '<p class="car-price">' + fmtPrix(c.prix) + '</p>'
+          + '</div></a></div>';
+      }).join('') + '</div>';
+    })
+    .catch(function() {
+      document.getElementById('favs-container').innerHTML = '<div class="empty">Impossible de charger les favoris.</div>';
+    });
+
+  /* ── Load history ── */
+  fetch('/api/users/history', { headers: authH() })
+    .then(function(r) { return r.json(); })
+    .then(function(cars) {
+      var el = document.getElementById('hist-container');
+      document.getElementById('hist-count').textContent = '(' + cars.length + ')';
+      if (!cars.length) {
+        el.innerHTML = '<div class="empty">Aucun véhicule consulté pour l\'instant. <a href="nos-vehicules.html">Voir le stock →</a></div>';
+        return;
+      }
+      el.innerHTML = '<div class="hist-list">' + cars.map(function(c) {
+        var img = (c.imgs && c.imgs[0]) ? '<img class="hist-thumb" src="' + esc(c.imgs[0]) + '" alt="" loading="lazy">' : '<div class="hist-thumb"></div>';
+        return '<a class="hist-item" href="vehicule.html?id=' + esc(c.id) + '">'
+          + img
+          + '<div class="hist-info"><p class="hist-name">' + esc(c.marque) + ' ' + esc(c.modele) + '</p>'
+          + '<p class="hist-sub">' + esc(c.version || '') + ' · ' + fmtKm(c.km) + '</p></div>'
+          + '<span class="hist-price">' + fmtPrix(c.prix) + '</span>'
+          + '</a>';
+      }).join('') + '</div>';
+    })
+    .catch(function() {
+      document.getElementById('hist-container').innerHTML = '<div class="empty">Impossible de charger l\'historique.</div>';
+    });
+
+  /* ── Remove fav ── */
+  window.removeFav = function(carId, btn) {
+    fetch('/api/users/favorites', {
+      method: 'POST',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, authH()),
+      body: JSON.stringify({ carId: carId }),
+    }).then(function() {
+      var card = btn.closest('.car-card');
+      if (card) card.remove();
+      var grid = document.querySelector('#favs-container .car-grid');
+      if (grid && !grid.children.length) {
+        document.getElementById('favs-container').innerHTML = '<div class="empty">Vous n\'avez pas encore de favoris. <a href="nos-vehicules.html">Parcourir le stock →</a></div>';
+      }
+      var countEl = document.getElementById('favs-count');
+      var m = (countEl.textContent || '').match(/\d+/);
+      if (m) countEl.textContent = '(' + Math.max(0, parseInt(m[0]) - 1) + ')';
+    });
+  };
+
+})();
+</script>
+</body>
+</html>

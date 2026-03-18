@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr" style="color-scheme:dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AZF AUTO — Contact & Rendez-vous</title>
+  <meta name="description" content="Contactez AZF AUTO à Clermont-Ferrand — téléphone, email, adresse et prise de rendez-vous en ligne." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand:         '#c00f08',
+            'brand-dark':  '#8b0905',
+            'brand-deeper':'#5a0603',
+            'brand-glow':  'rgba(192,15,8,0.18)',
+            ink:           '#0d0d0d',
+            'ink-soft':    '#3a3a3a',
+            'ink-muted':   '#7a7a7a',
+            'surface-2':   '#f7f5f4',
+            'surface-3':   '#ede9e8',
+            border:        '#e0dada',
+          },
+          fontFamily: {
+            display: ['"Barlow Condensed"', 'sans-serif'],
+            body:    ['"Inter"', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; font-family: 'Inter', sans-serif; }
+    body { margin: 0; background: #0d0d0d; color: #e8e6e4; overflow-x: hidden; }
+
+    /* ── Nav ── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(13,13,13,0.97);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.40);
+    }
+    #nav .nav-link { color: #c8c4c2; }
+    #nav .nav-link:hover { color: #c00f08; }
+    #nav .nav-link[aria-current="page"] { color: #c00f08; font-weight: 600; }
+    #nav .nav-logo { color: #fff; }
+    #nav .nav-phone { color: #c8c4c2; }
+    #nav .hamburger-line { background: #e8e6e4; }
+
+    .nav-link {
+      font-size: 0.875rem; font-weight: 500; letter-spacing: 0.01em;
+      text-decoration: none; transition: color 200ms ease;
+    }
+    .nav-link:focus-visible { outline: 2px solid rgba(192,15,8,0.5); outline-offset: 4px; border-radius: 2px; }
+
+    .nav-logo {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.5rem;
+      letter-spacing: -0.01em; color: #fff; text-decoration: none; transition: opacity 200ms ease;
+    }
+    .nav-logo:hover { opacity: 0.85; }
+    .nav-logo span { color: #c00f08; }
+
+    .nav-phone {
+      font-size: 0.875rem; font-weight: 500; text-decoration: none;
+      display: flex; align-items: center; gap: 6px; transition: color 200ms ease;
+    }
+    .nav-phone:hover { color: #fff !important; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px; background: #c00f08; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 9px 18px; border-radius: 6px; border: none; cursor: pointer;
+      text-decoration: none; letter-spacing: 0.01em;
+      box-shadow: 0 2px 6px rgba(192,15,8,0.40), 0 1px 2px rgba(0,0,0,0.20);
+      transition: background 200ms ease, transform 150ms ease, box-shadow 200ms ease;
+    }
+    .btn-primary:hover { background: #8b0905; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(192,15,8,0.50), 0 2px 4px rgba(0,0,0,0.25); }
+    .btn-primary:active { background: #5a0603; transform: translateY(0); }
+    .btn-primary:focus-visible { outline: 2px solid rgba(192,15,8,0.6); outline-offset: 3px; }
+
+    .btn-primary-lg {
+      display: inline-flex; align-items: center; gap: 8px; background: #c00f08; color: #fff;
+      font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 600;
+      padding: 14px 32px; border-radius: 8px; border: none; cursor: pointer;
+      text-decoration: none; letter-spacing: 0.01em;
+      box-shadow: 0 4px 16px rgba(192,15,8,0.45), 0 1px 3px rgba(0,0,0,0.25);
+      transition: background 200ms ease, transform 150ms ease, box-shadow 200ms ease;
+    }
+    .btn-primary-lg:hover { background: #8b0905; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(192,15,8,0.55), 0 2px 6px rgba(0,0,0,0.30); }
+    .btn-primary-lg:active { background: #5a0603; transform: translateY(0); }
+    .btn-primary-lg:focus-visible { outline: 2px solid rgba(192,15,8,0.6); outline-offset: 3px; }
+
+    /* ── Hamburger ── */
+    .hamburger-line { display: block; width: 22px; height: 2px; border-radius: 2px; transition: transform 250ms ease, opacity 250ms ease; }
+    #menu-toggle[aria-expanded="true"] .line-1 { transform: translateY(7px) rotate(45deg); }
+    #menu-toggle[aria-expanded="true"] .line-2 { opacity: 0; }
+    #menu-toggle[aria-expanded="true"] .line-3 { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── Mobile menu ── */
+    #mobile-menu { display: none; background: rgba(13,13,13,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.08); }
+    #mobile-menu.open { display: block; }
+    .mobile-link { display: block; padding: 10px 0; font-size: 1.0625rem; font-weight: 500; color: #c8c4c2; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.08); transition: color 150ms ease; }
+    .mobile-link:hover { color: #c00f08; }
+    .mobile-link[aria-current="page"] { color: #c00f08; font-weight: 600; }
+
+    /* ── Grain overlay ── */
+    .grain-overlay { position: relative; }
+    .grain-overlay::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.045; pointer-events: none; z-index: 1;
+    }
+
+    /* ── Contact cards ── */
+    .contact-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 32px;
+      display: flex; flex-direction: column; gap: 16px;
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .contact-card:hover {
+      border-color: rgba(192,15,8,0.25);
+      box-shadow: 0 4px 24px rgba(192,15,8,0.08), 0 2px 8px rgba(0,0,0,0.20);
+    }
+    .contact-icon {
+      width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+      background: rgba(192,15,8,0.10); border-radius: 12px; flex-shrink: 0;
+    }
+
+    /* ── Light mode ── */
+    body.light { background: #fff; color: #0d0d0d; }
+    body.light #nav { background: rgba(255,255,255,0.97); box-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.10); }
+    body.light #nav .nav-link { color: #3a3a3a; }
+    body.light #nav .nav-link:hover { color: #c00f08; }
+    body.light #nav .nav-link[aria-current="page"] { color: #c00f08; }
+    body.light #nav .nav-logo { color: #c00f08; }
+    body.light #nav .nav-phone { color: #3a3a3a; }
+    body.light #nav .hamburger-line { background: #0d0d0d; }
+    body.light #theme-toggle { border-color: rgba(0,0,0,0.18); color: rgba(0,0,0,0.60); }
+    body.light #theme-toggle:hover { border-color: rgba(0,0,0,0.40); color: #0d0d0d; }
+    body.light #mobile-menu { background: rgba(255,255,255,0.98); border-top-color: #e0dada; }
+    body.light .mobile-link { color: #0d0d0d; border-bottom-color: #f0ecea; }
+    body.light .contact-card { background: #f7f5f4; border-color: #e0dada; }
+    body.light .contact-card h3 { color: #0d0d0d; }
+    body.light .contact-card p, body.light .contact-card address { color: #3a3a3a; }
+    body.light .contact-icon { background: rgba(192,15,8,0.08); }
+    body.light .hero-section { background: #f7f5f4 !important; }
+    body.light .hero-section h1, body.light .hero-section p { color: #0d0d0d !important; }
+    body.light .cards-section { background: #fff !important; }
+    /* RDV section + Footer */
+    body.light #rdv { background: #f7f5f4 !important; }
+    body.light #rdv h2 { color: #0d0d0d !important; }
+    body.light #rdv p { color: rgba(0,0,0,0.55) !important; }
+    body.light footer { background: #f0eeec !important; border-top-color: rgba(0,0,0,0.08) !important; }
+    body.light footer h4 { color: rgba(0,0,0,0.40) !important; }
+    body.light footer p { color: rgba(0,0,0,0.55) !important; }
+    body.light footer address { color: rgba(0,0,0,0.65) !important; }
+    body.light footer a[href^="tel"], body.light footer a[href^="mailto"] { color: rgba(0,0,0,0.65) !important; }
+    body.light footer [style*="border-top:1px solid rgba(255,255,255"] { border-top-color: rgba(0,0,0,0.08) !important; }
+
+    @media (min-width: 768px) {
+      footer > div > div:first-child { grid-template-columns: repeat(4, 1fr) !important; }
+      footer > div > div:last-child  { flex-direction: row !important; }
+      .cards-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ─── -->
+<header id="nav">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;">
+    <a href="index.html" class="nav-logo">AZF<span>&nbsp;AUTO</span></a>
+    <nav style="display:flex;align-items:center;gap:32px;" class="hidden md:flex">
+      <a href="index.html" class="nav-link">Accueil</a>
+      <a href="nos-vehicules.html" class="nav-link">Nos véhicules</a>
+      <a href="contact.html" class="nav-link" aria-current="page">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button id="theme-toggle" aria-label="Basculer le thème"
+              style="background:none;border:1.5px solid rgba(255,255,255,0.22);border-radius:8px;cursor:pointer;padding:7px 9px;display:flex;align-items:center;color:rgba(255,255,255,0.80);transition:border-color 200ms ease,color 200ms ease;"
+              onmouseover="this.style.borderColor='rgba(255,255,255,0.55)';this.style.color='#fff'"
+              onmouseout="this.style.borderColor='rgba(255,255,255,0.22)';this.style.color='rgba(255,255,255,0.80)'">
+        <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg id="icon-sun"  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+      <a href="tel:+33363381844" class="nav-phone hidden md:flex">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        03 63 38 18 44
+      </a>
+      <a href="#rdv" class="btn-primary">Prendre RDV</a>
+      <div id="nav-auth"></div>
+      <button id="menu-toggle" aria-expanded="false" aria-label="Menu" class="md:hidden"
+              style="background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;">
+        <span class="hamburger-line line-1"></span>
+        <span class="hamburger-line line-2"></span>
+        <span class="hamburger-line line-3"></span>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-menu">
+    <div style="padding:20px 24px;display:flex;flex-direction:column;gap:4px;">
+      <a href="index.html"            class="mobile-link" onclick="closeMobileMenu()">Accueil</a>
+      <a href="nos-vehicules.html"    class="mobile-link" onclick="closeMobileMenu()">Nos véhicules</a>
+      <a href="contact.html"          class="mobile-link" aria-current="page" onclick="closeMobileMenu()">Contact</a>
+      <div id="mobile-auth" style="margin-top:4px;"></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0;" />
+      <a href="tel:+33363381844" style="display:flex;align-items:center;gap:8px;color:#c8c4c2;font-size:0.9375rem;font-weight:500;text-decoration:none;padding:8px 0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        03 63 38 18 44
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ─── HERO ─── -->
+<section class="hero-section grain-overlay" style="margin-top:64px;padding:80px 0 64px;background:#0d0d0d;overflow:hidden;">
+  <div style="position:absolute;inset:0;pointer-events:none;background:
+    radial-gradient(ellipse 50% 80% at 10% 50%, rgba(192,15,8,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 90% 30%, rgba(192,15,8,0.08) 0%, transparent 55%);
+  "></div>
+  <div style="position:relative;z-index:2;max-width:720px;margin:0 auto;padding:0 24px;text-align:center;">
+    <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.14em;color:#c00f08;font-weight:700;margin:0 0 16px;">NOUS CONTACTER</p>
+    <h1 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin:0 0 20px;">
+      Prenez rendez-vous<br/>avec nous
+    </h1>
+    <p style="font-size:0.9375rem;color:rgba(255,255,255,0.55);line-height:1.75;margin:0;max-width:480px;margin-left:auto;margin-right:auto;">
+      Notre équipe est disponible du lundi au samedi pour répondre à vos questions, organiser un essai ou préparer votre reprise.
+    </p>
+  </div>
+</section>
+
+<!-- ─── CARTES CONTACT ─── -->
+<section class="cards-section" style="padding:64px 0;background:#0d0d0d;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div class="cards-grid" style="display:grid;grid-template-columns:1fr;gap:24px;">
+
+      <!-- Téléphone -->
+      <div class="contact-card">
+        <div class="contact-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c00f08" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div>
+          <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 6px;">Appelez-nous</p>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.375rem;font-weight:700;color:#fff;margin:0 0 4px;letter-spacing:-0.01em;">Téléphone</h3>
+          <a href="tel:+33363381844" style="font-size:1.25rem;font-weight:600;color:#c00f08;text-decoration:none;transition:color 200ms ease;"
+             onmouseover="this.style.color='#8b0905'" onmouseout="this.style.color='#c00f08'">03 63 38 18 44</a>
+          <p style="font-size:0.8125rem;color:rgba(255,255,255,0.40);margin:8px 0 0;line-height:1.6;">Lun – Ven : 9h – 18h30<br/>Samedi : 9h – 17h</p>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="contact-card">
+        <div class="contact-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c00f08" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 6px;">Écrivez-nous</p>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.375rem;font-weight:700;color:#fff;margin:0 0 4px;letter-spacing:-0.01em;">Email</h3>
+          <a href="mailto:contact@azf-auto-occasion.com" style="font-size:0.9375rem;font-weight:500;color:#c00f08;text-decoration:none;word-break:break-all;transition:color 200ms ease;"
+             onmouseover="this.style.color='#8b0905'" onmouseout="this.style.color='#c00f08'">contact@azf-auto-occasion.com</a>
+          <p style="font-size:0.8125rem;color:rgba(255,255,255,0.40);margin:8px 0 0;line-height:1.6;">Réponse sous 24h ouvrées.</p>
+        </div>
+      </div>
+
+      <!-- Adresse & Horaires -->
+      <div class="contact-card">
+        <div class="contact-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c00f08" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <p style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 6px;">Venez nous voir</p>
+          <h3 style="font-family:'Barlow Condensed',sans-serif;font-size:1.375rem;font-weight:700;color:#fff;margin:0 0 8px;letter-spacing:-0.01em;">Adresse & Horaires</h3>
+          <address style="font-style:normal;font-size:0.875rem;color:rgba(255,255,255,0.65);line-height:1.7;margin:0 0 12px;">
+            12 Rue de l'Industrie<br/>63000 Clermont-Ferrand<br/>France
+          </address>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:0.8125rem;margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:rgba(255,255,255,0.45);">Lun – Ven</span><span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 18h30</span></div>
+            <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:rgba(255,255,255,0.45);">Samedi</span><span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 17h</span></div>
+            <div style="display:flex;justify-content:space-between;gap:16px;"><span style="color:rgba(255,255,255,0.45);">Dimanche</span><span style="color:rgba(255,255,255,0.30);">Fermé</span></div>
+          </div>
+          <a href="https://maps.google.com/?q=12+Rue+de+l'Industrie,+63000+Clermont-Ferrand" target="_blank" rel="noopener noreferrer"
+             style="display:inline-flex;align-items:center;gap:6px;font-size:0.8125rem;font-weight:600;color:#c00f08;text-decoration:none;transition:color 200ms ease;"
+             onmouseover="this.style.color='#8b0905'" onmouseout="this.style.color='#c00f08'">
+            Ouvrir dans Google Maps
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION RDV ─── -->
+<section id="rdv" class="grain-overlay" style="position:relative;padding:96px 0;overflow:hidden;background:#0d0d0d;">
+
+  <!-- Radial gradients -->
+  <div style="position:absolute;inset:0;pointer-events:none;background:
+    radial-gradient(ellipse 65% 90% at 15% 50%, rgba(192,15,8,0.20) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 70% at 85% 50%, rgba(192,15,8,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 50% 100%, rgba(192,15,8,0.08) 0%, transparent 50%);
+  "></div>
+
+  <!-- Content -->
+  <div style="position:relative;z-index:2;max-width:720px;margin:0 auto;padding:0 24px;text-align:center;">
+    <p style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.14em;color:#c00f08;font-weight:700;margin:0 0 16px;">PRISE DE RENDEZ-VOUS</p>
+    <h2 style="font-family:'Barlow Condensed',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin:0 0 20px;">
+      Réservez votre essai<br/>ou votre visite
+    </h2>
+    <p style="font-size:0.9375rem;color:rgba(255,255,255,0.55);line-height:1.75;margin:0 0 40px;max-width:480px;margin-left:auto;margin-right:auto;">
+      Remplissez notre formulaire en ligne en moins de 2 minutes. Nous confirmons votre créneau par téléphone sous 24h.
+    </p>
+
+    <a href="https://calendar.app.google/CKVKaJNh6psSXhhg6" target="_blank" rel="noopener noreferrer" class="btn-primary-lg">
+      Prendre rendez-vous
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+
+    <p style="margin-top:24px;font-size:0.875rem;color:rgba(255,255,255,0.35);">
+      Ou appelez directement le
+      <a href="tel:+33363381844" style="color:rgba(255,255,255,0.55);text-decoration:none;font-weight:500;transition:color 200ms ease;"
+         onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">03 63 38 18 44</a>
+    </p>
+  </div>
+
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer style="background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.07);padding:60px 0 0;">
+  <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
+    <div style="display:grid;grid-template-columns:1fr;gap:40px;" class="md:grid-cols-4">
+      <div>
+        <a href="index.html" style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.75rem;color:#fff;text-decoration:none;letter-spacing:-0.01em;display:block;margin-bottom:12px;">AZF<span style="color:#c00f08;"> AUTO</span></a>
+        <p style="font-size:0.8125rem;color:rgba(255,255,255,0.40);line-height:1.7;margin:0;">Votre spécialiste en véhicules d'occasion de qualité. Sélection rigoureuse, prix transparents.</p>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Contact</h4>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="tel:+33363381844" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            03 63 38 18 44
+          </a>
+          <a href="mailto:contact@azf-auto-occasion.com" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            contact@azf-auto-occasion.com
+          </a>
+          <a href="contact.html" style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.65);font-size:0.875rem;text-decoration:none;transition:color 200ms ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.65)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Prendre rendez-vous
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Adresse</h4>
+        <address style="font-style:normal;color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.8;">12 Rue de l'Industrie<br/>63000 Clermont-Ferrand<br/>France</address>
+      </div>
+      <div>
+        <h4 style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);font-weight:600;margin:0 0 16px;">Horaires</h4>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.875rem;color:rgba(255,255,255,0.65);">
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Lun – Ven</span><span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 18h30</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Samedi</span><span style="color:rgba(255,255,255,0.85);font-weight:500;">9h – 17h</span></div>
+          <div style="display:flex;justify-content:space-between;gap:16px;"><span>Dimanche</span><span style="color:rgba(255,255,255,0.40);">Fermé</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:48px;padding:20px 0;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px;text-align:center;" class="md:flex-row">
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.25);margin:0;">© 2026 AZF AUTO. Tous droits réservés.</p>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.20);margin:0;">Véhicules d'occasion · Financement · Reprise</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── JAVASCRIPT ─── -->
+<script>
+  /* Theme toggle */
+  var themeBtn = document.getElementById('theme-toggle');
+  var iconMoon = document.getElementById('icon-moon');
+  var iconSun  = document.getElementById('icon-sun');
+  var isLight  = localStorage.getItem('theme') === 'light';
+
+  function applyTheme(light) {
+    if (light) { document.body.classList.add('light'); iconMoon.style.display = 'none'; iconSun.style.display = ''; }
+    else { document.body.classList.remove('light'); iconMoon.style.display = ''; iconSun.style.display = 'none'; }
+  }
+  applyTheme(isLight);
+  themeBtn.addEventListener('click', function() { isLight = !isLight; localStorage.setItem('theme', isLight ? 'light' : 'dark'); applyTheme(isLight); });
+
+  /* Mobile menu */
+  var menuToggle = document.getElementById('menu-toggle');
+  var mobileMenu = document.getElementById('mobile-menu');
+  menuToggle.addEventListener('click', function() {
+    var isOpen = mobileMenu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }
+</script>
+
+<!-- ── Auth Nav Widget ── -->
+<style>
+  .nav-user-btn { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#e8e6e4;font-family:'Inter',sans-serif;font-size:0.8125rem;font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;position:relative;transition:background 150ms ease,border-color 150ms ease;white-space:nowrap; }
+  .nav-user-btn:hover { background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.22); }
+  .nav-user-avatar { width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#c00f08 0%,#5a0603 100%);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:800;color:#fff;flex-shrink:0; }
+  .nav-dropdown { position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.12);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.40);padding:6px;display:none;z-index:200; }
+  .nav-dropdown.open { display:block; }
+  .nav-dropdown a, .nav-dropdown button { display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;font-size:0.8125rem;font-weight:500;color:rgba(255,255,255,0.70);text-decoration:none;background:none;border:none;cursor:pointer;transition:background 130ms ease,color 130ms ease;text-align:left;font-family:'Inter',sans-serif; }
+  .nav-dropdown a:hover, .nav-dropdown button:hover { background:rgba(255,255,255,0.07);color:#fff; }
+  .nav-dropdown .sep { border:none;border-top:1px solid rgba(255,255,255,0.08);margin:4px 0; }
+  .nav-dropdown .danger { color:#ff7b75 !important; }
+  .nav-dropdown .danger:hover { background:rgba(255,95,88,0.08) !important; }
+  .nav-login-btn { display:flex;align-items:center;gap:6px;background:#c00f08;color:#fff;font-family:'Inter',sans-serif;font-size:0.8125rem;font-weight:600;padding:8px 16px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:background 150ms ease,transform 150ms ease;box-shadow:0 2px 8px rgba(192,15,8,0.35); }
+  .nav-login-btn:hover { background:#8b0905;transform:translateY(-1px); }
+</style>
+<script>
+(function() {
+  var token = localStorage.getItem('azf_token');
+  var navAuthEl    = document.getElementById('nav-auth');
+  var mobileAuthEl = document.getElementById('mobile-auth');
+  function initials(n) { return (n||'?').split(' ').slice(0,2).map(function(w){return w[0];}).join('').toUpperCase(); }
+  function renderLoggedIn(user) {
+    var isAdmin = user.role === 'admin';
+    var html = '<div style="position:relative;">'
+      + '<button class="nav-user-btn" onclick="toggleAuthDrop()" id="auth-user-btn"><span class="nav-user-avatar">' + initials(user.name) + '</span>' + user.name.split(' ')[0]
+      + '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>'
+      + '<div class="nav-dropdown" id="auth-dropdown">'
+      + (isAdmin ? '<a href="admin.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Panneau admin</a>' : '')
+      + '<a href="profile.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Mon profil</a>'
+      + '<a href="profile.html"><svg width="13" height="13" viewBox="0 0 24 24" fill="#c00f08" stroke="#c00f08" stroke-width="0"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Mes favoris</a>'
+      + '<hr class="sep"><button class="danger" onclick="navLogout()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Déconnexion</button>'
+      + '</div></div>';
+    if (navAuthEl) navAuthEl.innerHTML = html;
+    if (mobileAuthEl) mobileAuthEl.innerHTML = '<a href="profile.html" class="mobile-link">Mon compte</a>' + (isAdmin ? '<a href="admin.html" class="mobile-link" style="color:#c00f08;">Admin</a>' : '');
+  }
+  function renderLoggedOut() {
+    if (navAuthEl) navAuthEl.innerHTML = '<a href="login.html" class="nav-login-btn">Connexion</a>';
+    if (mobileAuthEl) mobileAuthEl.innerHTML = '<a href="login.html" class="mobile-link" style="color:#c00f08;">Connexion / Inscription</a>';
+  }
+  window.toggleAuthDrop = function() { var d = document.getElementById('auth-dropdown'); if (d) d.classList.toggle('open'); };
+  document.addEventListener('click', function(e) {
+    var btn = document.getElementById('auth-user-btn'); var drop = document.getElementById('auth-dropdown');
+    if (drop && btn && !btn.contains(e.target) && !drop.contains(e.target)) drop.classList.remove('open');
+  });
+  window.navLogout = function() {
+    fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('azf_token')||'') } });
+    localStorage.removeItem('azf_token'); localStorage.removeItem('azf_user'); renderLoggedOut();
+  };
+  if (!token) { renderLoggedOut(); return; }
+  try { var cached = JSON.parse(localStorage.getItem('azf_user') || 'null'); if (cached) renderLoggedIn(cached); } catch(e) {}
+  fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.user) { localStorage.setItem('azf_user', JSON.stringify(d.user)); renderLoggedIn(d.user); }
+      else { localStorage.removeItem('azf_token'); localStorage.removeItem('azf_user'); renderLoggedOut(); }
+    }).catch(function() { renderLoggedOut(); });
+})();
+</script>
+
+</body>
+</html>
