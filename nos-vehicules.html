@@ -83,8 +83,8 @@
     #menu-toggle[aria-expanded="true"] .line-1 { transform: translateY(7px) rotate(45deg); }
     #menu-toggle[aria-expanded="true"] .line-2 { opacity: 0; }
     #menu-toggle[aria-expanded="true"] .line-3 { transform: translateY(-7px) rotate(-45deg); }
-    #mobile-menu { display: none; background: rgba(13,13,13,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.08); }
-    #mobile-menu.open { display: block; }
+    #mobile-menu { background: rgba(13,13,13,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.08); overflow: hidden; max-height: 0; opacity: 0; transform: translateY(-6px); transition: max-height 280ms ease, opacity 220ms ease, transform 220ms ease; pointer-events: none; }
+    #mobile-menu.open { max-height: 500px; opacity: 1; transform: translateY(0); pointer-events: auto; }
     .mobile-link { display: block; padding: 10px 0; font-size: 1.0625rem; font-weight: 500; color: #c8c4c2; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.08); transition: color 150ms ease; }
     .mobile-link:hover { color: #c00f08; }
 
@@ -301,8 +301,8 @@
       </a>
       <a href="nos-vehicules.html" class="md:hidden" style="font-family:'Inter',sans-serif;font-size:0.875rem;font-weight:600;color:rgba(255,255,255,0.80);text-decoration:none;white-space:nowrap;">Nos véhicules</a>
       <div id="nav-auth" class="hidden md:block"></div>
-      <button id="menu-toggle" aria-expanded="false" aria-label="Menu" class="md:hidden"
-              style="background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;">
+      <button id="menu-toggle" aria-expanded="false" aria-label="Menu" class="flex md:hidden"
+              style="background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:5px;">
         <span class="hamburger-line line-1"></span>
         <span class="hamburger-line line-2"></span>
         <span class="hamburger-line line-3"></span>
@@ -1107,6 +1107,14 @@ menuToggle.addEventListener('click', function() {
   var isOpen = mobileMenu.classList.toggle('open');
   menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 });
+
+/* expose to global scope so inline onchange/oninput handlers can find them */
+window.applyFilters         = applyFilters;
+window.onMarqueChange       = onMarqueChange;
+window.onMarqueChangeMobile = onMarqueChangeMobile;
+window.onRangePrixMin       = onRangePrixMin;
+window.onRangePrixMax       = onRangePrixMax;
+window.onRangeKm            = onRangeKm;
 
 /* ════════════════════════════════════════
    BOOT

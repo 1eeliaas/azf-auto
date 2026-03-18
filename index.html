@@ -302,13 +302,23 @@
 
     /* ── Mobile menu ── */
     #mobile-menu {
-      display: none;
       background: rgba(13,13,13,0.98);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: max-height 280ms ease, opacity 220ms ease, transform 220ms ease;
+      pointer-events: none;
     }
-    #mobile-menu.open { display: block; }
+    #mobile-menu.open {
+      max-height: 500px;
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
 
     /* ── Grain texture ── */
     .grain-overlay::before {
@@ -388,8 +398,8 @@
       <div id="nav-auth" class="hidden md:block"></div>
 
       <!-- Hamburger (mobile) -->
-      <button id="menu-toggle" aria-expanded="false" aria-label="Menu" class="md:hidden"
-              style="background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;">
+      <button id="menu-toggle" aria-expanded="false" aria-label="Menu" class="flex md:hidden"
+              style="background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:5px;">
         <span class="hamburger-line line-1"></span>
         <span class="hamburger-line line-2"></span>
         <span class="hamburger-line line-3"></span>
