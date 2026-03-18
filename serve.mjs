@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 
 const __dirname   = path.dirname(fileURLToPath(import.meta.url));
-const PORT        = 3000;
+const PORT        = process.env.PORT || 3000;
 const ROOT        = __dirname;
 const CARS_FILE   = path.join(ROOT, 'data', 'cars.json');
 const USERS_FILE  = path.join(ROOT, 'data', 'users.json');
