@@ -3,6 +3,7 @@ import fs      from 'fs';
 import path    from 'path';
 import crypto  from 'crypto';
 import bcrypt  from 'bcryptjs';
+import Busboy  from 'busboy';
 import { fileURLToPath } from 'url';
 
 const __dirname   = path.dirname(fileURLToPath(import.meta.url));
@@ -11,6 +12,9 @@ const ROOT        = __dirname;
 const CARS_FILE     = path.join(ROOT, 'data', 'cars.json');
 const USERS_FILE    = path.join(ROOT, 'data', 'users.json');
 const SESSIONS_FILE = path.join(ROOT, 'data', 'sessions.json');
+const UPLOADS_DIR   = path.join(ROOT, 'images', 'vehicules');
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 Mo
+const ALLOWED_MIME  = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
 
 const MIME = {
   '.html':  'text/html; charset=utf-8',
@@ -347,6 +351,76 @@ http.createServer(async (req, res) => {
     data.cars.splice(idx, 1);
     writeCars(data);
     json(res, 200, { ok: true });
+    return;
+  }
+
+  /* POST /api/upload — admin only, multipart/form-data */
+  if (urlPath === '/api/upload' && req.method === 'POST') {
+    const session = getSession(req);
+    if (!session || session.role !== 'admin') { json(res, 403, { error: 'Accès refusé.' }); return; }
+
+    const ct = req.headers['content-type'] || '';
+    if (!ct.includes('multipart/form-data')) { json(res, 400, { error: 'Content-Type must be multipart/form-data.' }); return; }
+
+    const uploadedPaths = [];
+    const errors = [];
+    let pending = 0;
+    let finished = false;
+
+    function tryRespond() {
+      if (finished && pending === 0) {
+        if (uploadedPaths.length === 0 && errors.length > 0) json(res, 400, { error: errors.join(' ') });
+        else json(res, 200, { paths: uploadedPaths, errors });
+      }
+    }
+
+    let bb;
+    try { bb = Busboy({ headers: req.headers, limits: { fileSize: MAX_FILE_SIZE } }); }
+    catch (e) { json(res, 400, { error: 'Requête multipart invalide.' }); return; }
+
+    bb.on('file', (_fieldname, fileStream, info) => {
+      const { filename, mimeType } = info;
+      if (!ALLOWED_MIME.has(mimeType)) {
+        fileStream.resume();
+        errors.push(`${filename}: type non autorisé.`);
+        return;
+      }
+      const originalExt = path.extname(filename).toLowerCase();
+      const safeExts    = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+      const safeExt     = safeExts.includes(originalExt) ? originalExt : '.jpg';
+      const newFilename = `vehicule-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${safeExt}`;
+      const destPath    = path.join(UPLOADS_DIR, newFilename);
+      const relPath     = `images/vehicules/${newFilename}`;
+
+      let sizeExceeded = false;
+      pending++;
+      const ws = fs.createWriteStream(destPath);
+
+      fileStream.on('limit', () => {
+        sizeExceeded = true;
+        ws.destroy();
+        fs.unlink(destPath, () => {});
+        errors.push(`${filename}: fichier trop volumineux (max 10 Mo).`);
+      });
+
+      fileStream.pipe(ws);
+
+      ws.on('finish', () => {
+        if (!sizeExceeded) uploadedPaths.push(relPath);
+        pending--;
+        tryRespond();
+      });
+      ws.on('error', () => {
+        errors.push(`${filename}: erreur d'écriture.`);
+        pending--;
+        tryRespond();
+      });
+    });
+
+    bb.on('finish', () => { finished = true; tryRespond(); });
+    bb.on('error',  () => json(res, 400, { error: 'Erreur de traitement.' }));
+
+    req.pipe(bb);
     return;
   }
 

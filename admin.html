@@ -75,6 +75,20 @@
     .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
 
+    /* ── Image upload ── */
+    .img-upload-zone { border:1.5px dashed rgba(255,255,255,.15); border-radius:10px; padding:18px; transition:border-color 200ms,background 200ms; }
+    .img-upload-zone.drag-over { border-color:rgba(192,15,8,.6); background:rgba(192,15,8,.04); }
+    .img-preview-grid { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+    .img-preview-item { position:relative; width:90px; height:68px; border-radius:7px; overflow:hidden; background:#1c1c1c; flex-shrink:0; }
+    .img-preview-item img { width:100%; height:100%; object-fit:cover; display:block; }
+    .img-preview-item .img-remove-btn { position:absolute; top:4px; right:4px; width:20px; height:20px; border-radius:50%; background:rgba(0,0,0,.75); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; padding:0; opacity:0; transition:opacity 150ms; }
+    .img-preview-item:hover .img-remove-btn { opacity:1; }
+    .img-upload-trigger { display:inline-flex; align-items:center; gap:6px; font-size:.8125rem; font-weight:600; color:rgba(255,255,255,.45); cursor:pointer; padding:8px 14px; border:1px solid rgba(255,255,255,.12); border-radius:7px; transition:color 150ms,border-color 150ms,background 150ms; user-select:none; position:relative; }
+    .img-upload-trigger:hover { color:#fff; border-color:rgba(255,255,255,.3); background:rgba(255,255,255,.04); }
+    .img-upload-status { font-size:.8rem; color:rgba(255,255,255,.3); margin-top:8px; min-height:1.2em; }
+    .img-upload-status.uploading { color:#f0c040; }
+    .img-upload-status.error { color:#ff7b75; }
+
     /* ── Car table / cards ── */
     .car-table { width: 100%; border-collapse: collapse; }
     .car-table thead th {
@@ -336,11 +350,16 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">
-          Photos (une URL ou chemin par ligne)
-          <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.75rem;color:rgba(255,255,255,0.25);">ex: images/vehicules/clio-front.png</span>
-        </label>
-        <textarea id="f-imgs" class="form-textarea" placeholder="images/vehicules/ma-voiture-front.jpg&#10;images/vehicules/ma-voiture-interieur.jpg"></textarea>
+        <label class="form-label">Photos du véhicule</label>
+        <div class="img-upload-zone" id="img-upload-zone">
+          <div class="img-preview-grid" id="img-preview-grid"></div>
+          <label class="img-upload-trigger">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Ajouter des photos
+            <input type="file" id="f-imgs-input" accept="image/jpeg,image/png,image/webp" multiple style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;" />
+          </label>
+          <p class="img-upload-status" id="img-upload-status"></p>
+        </div>
       </div>
 
       <div class="form-group">
@@ -405,6 +424,8 @@
 /* ═══════════ CONFIG ═══════════ */
 var ALL_CARS    = [];
 var pendingDeleteId = null;
+var currentImgs = [];
+var isUploading = false;
 
 /* ═══════════ AUTH ═══════════ */
 function getToken() { return localStorage.getItem('azf_token') || ''; }
@@ -420,9 +441,74 @@ window.doLogout = function() {
   window.location.href = 'login.html';
 };
 
+/* ═══════════ IMAGE UPLOAD ═══════════ */
+function renderImgPreviews() {
+  var grid = document.getElementById('img-preview-grid');
+  grid.innerHTML = currentImgs.map(function(p, idx) {
+    return '<div class="img-preview-item">'
+      + '<img src="/' + esc(p) + '" alt="" loading="lazy" onerror="this.parentNode.style.background=\'#2a1a1a\'">'
+      + '<button class="img-remove-btn" onclick="removeImg(' + idx + ')" title="Supprimer" type="button">'
+      + '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+      + '</button></div>';
+  }).join('');
+}
+
+window.removeImg = function(idx) { currentImgs.splice(idx, 1); renderImgPreviews(); };
+
+function setupImgUpload() {
+  var input = document.getElementById('f-imgs-input');
+  var zone  = document.getElementById('img-upload-zone');
+  input.addEventListener('change', function() {
+    if (input.files && input.files.length) { uploadFiles(Array.from(input.files)); input.value = ''; }
+  });
+  zone.addEventListener('dragover',  function(e) { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', function()  { zone.classList.remove('drag-over'); });
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault(); zone.classList.remove('drag-over');
+    var files = Array.from(e.dataTransfer.files).filter(function(f){ return f.type.startsWith('image/'); });
+    if (files.length) uploadFiles(files);
+  });
+}
+
+async function uploadFiles(files) {
+  if (isUploading) return;
+  isUploading = true;
+  var status  = document.getElementById('img-upload-status');
+  var trigger = document.querySelector('.img-upload-trigger');
+  trigger.style.pointerEvents = 'none'; trigger.style.opacity = '0.5';
+  status.textContent = 'Téléchargement en cours…'; status.className = 'img-upload-status uploading';
+
+  var oversized = files.filter(function(f){ return f.size > 10 * 1024 * 1024; });
+  if (oversized.length) {
+    status.textContent = oversized.map(function(f){ return f.name; }).join(', ') + ' : trop volumineux (max 10 Mo).';
+    status.className = 'img-upload-status error';
+    trigger.style.pointerEvents = ''; trigger.style.opacity = ''; isUploading = false; return;
+  }
+  var fd = new FormData();
+  files.forEach(function(f) { fd.append('images', f); });
+  try {
+    var r = await fetch('/api/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + getToken() }, body: fd });
+    var result = await r.json();
+    if (!r.ok) {
+      status.textContent = result.error || 'Erreur.'; status.className = 'img-upload-status error';
+    } else {
+      result.paths.forEach(function(p){ currentImgs.push(p); });
+      renderImgPreviews();
+      if (result.errors && result.errors.length) {
+        status.textContent = result.errors.join(' '); status.className = 'img-upload-status error';
+      } else {
+        status.textContent = result.paths.length + ' photo(s) ajoutée(s).'; status.className = 'img-upload-status';
+        setTimeout(function(){ status.textContent = ''; }, 3000);
+      }
+    }
+  } catch(e) { status.textContent = 'Erreur réseau.'; status.className = 'img-upload-status error'; }
+  trigger.style.pointerEvents = ''; trigger.style.opacity = ''; isUploading = false;
+}
+
 function showApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
+  setupImgUpload();
   loadCars();
 }
 
@@ -547,7 +633,7 @@ window.closeModal = function() {
 };
 
 function clearForm() {
-  ['f-id','f-marque','f-modele','f-version','f-prix','f-km','f-annee','f-motorisation','f-couleur','f-co2','f-ref','f-imgs','f-options','f-description'].forEach(function(id) {
+  ['f-id','f-marque','f-modele','f-version','f-prix','f-km','f-annee','f-motorisation','f-couleur','f-co2','f-ref','f-options','f-description'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -556,6 +642,9 @@ function clearForm() {
   document.getElementById('f-portes').value       = '5';
   document.getElementById('f-disponible').checked = true;
   document.getElementById('f-nouveaute').checked  = false;
+  currentImgs = []; renderImgPreviews();
+  document.getElementById('img-upload-status').textContent = '';
+  document.getElementById('img-upload-status').className = 'img-upload-status';
 }
 
 function fillForm(car) {
@@ -573,7 +662,7 @@ function fillForm(car) {
   document.getElementById('f-carburant').value    = car.carburant || 'Essence';
   document.getElementById('f-transmission').value = car.transmission || 'Manuelle';
   document.getElementById('f-portes').value       = String(car.portes || 5);
-  document.getElementById('f-imgs').value         = (car.imgs || []).join('\n');
+  currentImgs = (car.imgs || []).slice(); renderImgPreviews();
   document.getElementById('f-options').value      = (car.options || []).join('\n');
   document.getElementById('f-description').value  = car.description || '';
   document.getElementById('f-disponible').checked = car.disponible !== false;
@@ -581,7 +670,7 @@ function fillForm(car) {
 }
 
 function readForm() {
-  var imgs    = document.getElementById('f-imgs').value.split('\n').map(s => s.trim()).filter(Boolean);
+  var imgs    = currentImgs.slice();
   var options = document.getElementById('f-options').value.split('\n').map(s => s.trim()).filter(Boolean);
   var id      = document.getElementById('f-id').value.trim();
   if (!id) {

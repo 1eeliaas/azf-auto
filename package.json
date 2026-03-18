@@ -6,6 +6,7 @@
     "start": "node serve.mjs"
   },
   "dependencies": {
-    "bcryptjs": "^3.0.3"
+    "bcryptjs": "^3.0.3",
+    "busboy": "^1.6.0"
   }
 }
