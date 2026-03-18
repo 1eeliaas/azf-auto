@@ -4,5 +4,8 @@
   "type": "module",
   "scripts": {
     "start": "node serve.mjs"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3"
   }
 }

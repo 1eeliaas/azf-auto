@@ -1,14 +1,16 @@
-import http   from 'http';
-import fs     from 'fs';
-import path   from 'path';
-import crypto from 'crypto';
+import http    from 'http';
+import fs      from 'fs';
+import path    from 'path';
+import crypto  from 'crypto';
+import bcrypt  from 'bcryptjs';
 import { fileURLToPath } from 'url';
 
 const __dirname   = path.dirname(fileURLToPath(import.meta.url));
 const PORT        = process.env.PORT || 3000;
 const ROOT        = __dirname;
-const CARS_FILE   = path.join(ROOT, 'data', 'cars.json');
-const USERS_FILE  = path.join(ROOT, 'data', 'users.json');
+const CARS_FILE     = path.join(ROOT, 'data', 'cars.json');
+const USERS_FILE    = path.join(ROOT, 'data', 'users.json');
+const SESSIONS_FILE = path.join(ROOT, 'data', 'sessions.json');
 
 const MIME = {
   '.html':  'text/html; charset=utf-8',
@@ -30,6 +32,28 @@ const MIME = {
 // token -> { userId, role, expiresAt }
 const sessions = new Map();
 
+/* ── Rate limiting (login) ── */
+// ip -> { count, resetAt }
+const loginAttempts = new Map();
+const MAX_ATTEMPTS  = 5;
+const WINDOW_MS     = 15 * 60 * 1000; // 15 min
+
+function checkRateLimit(ip) {
+  const now   = Date.now();
+  const entry = loginAttempts.get(ip);
+  if (!entry || now > entry.resetAt) {
+    loginAttempts.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= MAX_ATTEMPTS) return false;
+  entry.count++;
+  return true;
+}
+
+function resetRateLimit(ip) {
+  loginAttempts.delete(ip);
+}
+
 /* ── Helpers: Cars ── */
 function readCars()       { return JSON.parse(fs.readFileSync(CARS_FILE,  'utf-8')); }
 function writeCars(data)  { fs.writeFileSync(CARS_FILE,  JSON.stringify(data, null, 2), 'utf-8'); }
@@ -39,7 +63,14 @@ function readUsers()      { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8
 function writeUsers(data) { fs.writeFileSync(USERS_FILE, JSON.stringify(data, null, 2), 'utf-8'); }
 
 function hashPassword(pw) {
-  return crypto.createHash('sha256').update(pw).digest('hex');
+  return bcrypt.hashSync(pw, 10);
+}
+
+function verifyPassword(pw, hash) {
+  // Support legacy SHA-256 hashes during migration
+  const sha256 = crypto.createHash('sha256').update(pw).digest('hex');
+  if (hash === sha256) return true;
+  return bcrypt.compareSync(pw, hash);
 }
 
 function generateToken() {
@@ -142,13 +173,18 @@ http.createServer(async (req, res) => {
   /* POST /api/auth/login */
   if (urlPath === '/api/auth/login' && req.method === 'POST') {
     try {
+      const ip = req.socket.remoteAddress || 'unknown';
+      if (!checkRateLimit(ip)) {
+        json(res, 429, { error: 'Trop de tentatives. Réessayez dans 15 minutes.' }); return;
+      }
       const { email, password } = await parseBody(req);
       if (!email || !password) { json(res, 400, { error: 'Champs manquants.' }); return; }
       const data = readUsers();
       const user = data.users.find(u => u.email.toLowerCase() === email.toLowerCase());
-      if (!user || user.passwordHash !== hashPassword(password)) {
+      if (!user || !verifyPassword(password, user.passwordHash)) {
         json(res, 401, { error: 'Email ou mot de passe incorrect.' }); return;
       }
+      resetRateLimit(ip);
       const token = generateToken();
       sessions.set(token, { userId: user.id, role: user.role, expiresAt: Date.now() + 7 * 24 * 3600 * 1000 });
       json(res, 200, { token, user: safeUser(user) });
@@ -317,9 +353,19 @@ http.createServer(async (req, res) => {
   /* ── Static files ── */
   let filePath = urlPath;
   if (filePath === '/') filePath = '/index.html';
-  const fullPath    = path.join(ROOT, filePath);
+  const fullPath    = path.resolve(ROOT, '.' + filePath);
   const ext         = path.extname(fullPath);
   const contentType = MIME[ext] || 'application/octet-stream';
+
+  // Block path traversal and sensitive files
+  const relative = path.relative(ROOT, fullPath);
+  const isOutside   = relative.startsWith('..') || path.isAbsolute(relative);
+  const isProtected = /^data[/\\]/.test(relative) || /\.(mjs|json)$/.test(ext);
+  if (isOutside || isProtected) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' });
+    res.end('403 Forbidden');
+    return;
+  }
 
   fs.readFile(fullPath, (err, data) => {
     if (err) {
