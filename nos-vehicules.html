@@ -599,7 +599,59 @@ async function loadCars() {
     }
   }
   initFilters();
+  applyURLParams();
   applyFilters();
+}
+
+/* ════════════════════════════════════════
+   APPLY URL PARAMS (from homepage search)
+════════════════════════════════════════ */
+function applyURLParams() {
+  var params = new URLSearchParams(window.location.search);
+
+  var marque = params.get('marque');
+  if (marque) {
+    document.getElementById('f-marque').value  = marque;
+    document.getElementById('mf-marque').value = marque;
+    populateModeles(marque, 'f-modele');
+    populateModeles(marque, 'mf-modele');
+  }
+
+  var modele = params.get('modele');
+  if (modele) {
+    document.getElementById('f-modele').value  = modele;
+    document.getElementById('mf-modele').value = modele;
+  }
+
+  var budget = params.get('budget');
+  if (budget) {
+    document.getElementById('f-prix-max').value  = budget;
+    document.getElementById('mf-prix-max').value = budget;
+    var rMax = document.getElementById('range-prix-max');
+    if (parseInt(budget) <= parseInt(rMax.max)) {
+      rMax.value = budget;
+      document.getElementById('range-prix-max-label').textContent = fmtPrix(parseInt(budget));
+      updatePriceFill();
+    }
+  }
+
+  var carburant = params.get('carburant');
+  if (carburant) {
+    if (!state.carburants.includes(carburant)) state.carburants.push(carburant);
+    syncChips('f-carburant',  'carburants');
+    syncChips('mf-carburant', 'carburants');
+  }
+
+  var km = params.get('km');
+  if (km) {
+    var rKm = document.getElementById('range-km');
+    if (parseInt(km) <= parseInt(rKm.max)) {
+      rKm.value = km;
+      document.getElementById('range-km-label').textContent = fmtKm(parseInt(km));
+      updateKmFill();
+    }
+    document.getElementById('mf-km-max').value = km;
+  }
 }
 
 /* ════════════════════════════════════════

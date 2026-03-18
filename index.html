@@ -536,10 +536,10 @@
       <p style="font-size:0.8125rem;color:#888;margin:0 0 24px;line-height:1.5;">Trouvez votre véhicule idéal parmi notre sélection.</p>
     </div>
 
-    <form onsubmit="return false;" style="display:flex;flex-direction:column;gap:14px;">
+    <form onsubmit="doSearch(event);" style="display:flex;flex-direction:column;gap:14px;">
       <div>
         <label class="form-label">Marque</label>
-        <select class="form-select">
+        <select id="qs-marque" class="form-select">
           <option value="">Toutes les marques</option>
           <option>Renault</option>
           <option>Peugeot</option>
@@ -556,26 +556,26 @@
       </div>
       <div>
         <label class="form-label">Modèle</label>
-        <select class="form-select">
+        <select id="qs-modele" class="form-select">
           <option value="">Tous les modèles</option>
         </select>
       </div>
       <div>
         <label class="form-label">Budget maximum</label>
-        <select class="form-select">
+        <select id="qs-budget" class="form-select">
           <option value="">Sans limite</option>
-          <option>5 000 €</option>
-          <option>8 000 €</option>
-          <option>10 000 €</option>
-          <option>15 000 €</option>
-          <option>20 000 €</option>
-          <option>25 000 €</option>
-          <option>30 000 €</option>
+          <option value="5000">5 000 €</option>
+          <option value="8000">8 000 €</option>
+          <option value="10000">10 000 €</option>
+          <option value="15000">15 000 €</option>
+          <option value="20000">20 000 €</option>
+          <option value="25000">25 000 €</option>
+          <option value="30000">30 000 €</option>
         </select>
       </div>
       <div>
         <label class="form-label">Carburant</label>
-        <select class="form-select">
+        <select id="qs-carburant" class="form-select">
           <option value="">Tous</option>
           <option>Essence</option>
           <option>Diesel</option>
@@ -586,13 +586,13 @@
       </div>
       <div>
         <label class="form-label">Kilométrage maximum</label>
-        <select class="form-select">
+        <select id="qs-km" class="form-select">
           <option value="">Sans limite</option>
-          <option>20 000 km</option>
-          <option>50 000 km</option>
-          <option>80 000 km</option>
-          <option>100 000 km</option>
-          <option>150 000 km</option>
+          <option value="20000">20 000 km</option>
+          <option value="50000">50 000 km</option>
+          <option value="80000">80 000 km</option>
+          <option value="100000">100 000 km</option>
+          <option value="150000">150 000 km</option>
         </select>
       </div>
       <button type="submit" class="btn-primary" style="margin-top:6px;justify-content:center;padding:12px 18px;font-size:0.9375rem;">
@@ -1236,6 +1236,24 @@ function closeMobileMenu() {
     })
     .catch(function() { renderLoggedOut(); });
 })();
+</script>
+
+<script>
+function doSearch(e) {
+  e.preventDefault();
+  var params = new URLSearchParams();
+  var marque    = document.getElementById('qs-marque').value;
+  var modele    = document.getElementById('qs-modele').value;
+  var budget    = document.getElementById('qs-budget').value;
+  var carburant = document.getElementById('qs-carburant').value;
+  var km        = document.getElementById('qs-km').value;
+  if (marque)    params.set('marque', marque);
+  if (modele)    params.set('modele', modele);
+  if (budget)    params.set('budget', budget);
+  if (carburant) params.set('carburant', carburant);
+  if (km)        params.set('km', km);
+  window.location.href = 'nos-vehicules.html' + (params.toString() ? '?' + params.toString() : '');
+}
 </script>
 
 </body>
